@@ -1,3 +1,5 @@
+package com.github.ferinagy.adventOfCode.aoc2015
+
 fun main(args: Array<String>) {
     println("Part1:")
     println(calculateFloor(input))

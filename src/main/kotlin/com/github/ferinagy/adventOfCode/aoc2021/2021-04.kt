@@ -1,3 +1,5 @@
+package com.github.ferinagy.adventOfCode.aoc2021
+
 fun main(args: Array<String>) {
     println("Part1:")
     println(part1(input))
