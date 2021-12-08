@@ -24,6 +24,17 @@ class TspGraph {
         }.minOfWith(comparator) { it.dist }
     }
 
+    fun solveCircularTsp(comparator: Comparator<Int>): Int {
+        val nodes = edges.keys
+
+        return nodes.map {
+            val nonCirular = solveTsp(it, nodes - it, comparator)
+            val start = nonCirular.path.first()
+            val dist = edges[it]!![start]!!
+            Progress(it, nodes, nonCirular.path, nonCirular.dist + dist)
+        }.minOfWith(comparator) { it.dist }
+    }
+
     private fun solveTsp(node: String, remaining: Set<String>, comparator: Comparator<Int>): Progress {
         val cacheKey = CacheEntry(node, remaining)
         if (cacheKey in cache) return cache[cacheKey]!!
