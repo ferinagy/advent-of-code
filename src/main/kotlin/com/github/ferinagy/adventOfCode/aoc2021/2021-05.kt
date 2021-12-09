@@ -1,5 +1,6 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
+import com.github.ferinagy.adventOfCode.Coord2D
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -41,13 +42,6 @@ private fun parse(input: String): List<Pair<Coord2D, Coord2D>> = input.lines()
     .map {
         it.split(" -> ").let { (c1, c2) -> Coord2D.parse(c1) to Coord2D.parse(c2) }
     }
-
-data class Coord2D(val x: Int, val y: Int) {
-
-    companion object {
-        fun parse(input: String) = input.split(",").let { (x, y) -> Coord2D(x.toInt(), y.toInt()) }
-    }
-}
 
 private fun increasingRange(x: Int, y: Int): IntRange = if (x <= y) x..y else y..x
 
