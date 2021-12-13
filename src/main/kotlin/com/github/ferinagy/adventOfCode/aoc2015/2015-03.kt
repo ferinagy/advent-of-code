@@ -1,5 +1,7 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.Coord2D
+
 fun main(args: Array<String>) {
     println("Part1:")
     println(visitsAtLeastOnce(input))
@@ -11,13 +13,13 @@ fun main(args: Array<String>) {
 
 private fun visitsAtLeastOnce(input: String): Int {
     val map = mapOf(
-        '^' to Coords2d(0, -1),
-        'v' to Coords2d(0, 1),
-        '>' to Coords2d(1, 0),
-        '<' to Coords2d(-1, 0),
+        '^' to Coord2D(0, -1),
+        'v' to Coord2D(0, 1),
+        '>' to Coord2D(1, 0),
+        '<' to Coord2D(-1, 0),
     )
 
-    var current = Coords2d(0, 0)
+    var current = Coord2D(0, 0)
     val visited = mutableMapOf(current to 1)
     input.forEach {
         current += map[it]!!
@@ -30,14 +32,14 @@ private fun visitsAtLeastOnce(input: String): Int {
 
 private fun visitsAtLeastOnceWithRobot(input: String): Int {
     val map = mapOf(
-        '^' to Coords2d(0, -1),
-        'v' to Coords2d(0, 1),
-        '>' to Coords2d(1, 0),
-        '<' to Coords2d(-1, 0),
+        '^' to Coord2D(0, -1),
+        'v' to Coord2D(0, 1),
+        '>' to Coord2D(1, 0),
+        '<' to Coord2D(-1, 0),
     )
 
-    var current1 = Coords2d(0, 0)
-    var current2 = Coords2d(0, 0)
+    var current1 = Coord2D(0, 0)
+    var current2 = Coord2D(0, 0)
     val visited = mutableMapOf(current1 to 2)
     var robot = false
 
@@ -55,13 +57,6 @@ private fun visitsAtLeastOnceWithRobot(input: String): Int {
     }
 
     return visited.keys.size
-}
-
-data class Coords2d(val x: Int, val y: Int) {
-
-    operator fun plus(other: Coords2d): Coords2d {
-        return Coords2d(x + other.x, y + other.y)
-    }
 }
 
 private const val testInput1 = """^>v<"""

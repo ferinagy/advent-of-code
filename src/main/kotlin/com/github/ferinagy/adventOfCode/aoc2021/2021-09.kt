@@ -1,6 +1,7 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
 import com.github.ferinagy.adventOfCode.Coord2D
+import com.github.ferinagy.adventOfCode.filterIn
 
 fun main(args: Array<String>) {
     println("Part1:")
@@ -65,16 +66,8 @@ private fun List<String>.getNeighboringValues(row: Int, col: Int): List<Char> {
 }
 
 private fun List<String>.getNeighborCoords(coord2D: Coord2D): List<Coord2D> {
-    val steps = listOf(0 to 1, 0 to -1, 1 to 0, -1 to 0)
-    val result = mutableListOf<Coord2D>()
-    steps.forEach { (dx, dy) ->
-        val row = coord2D.y + dy
-        val col = coord2D.x + dx
-        if (row in indices && col in get(row).indices) {
-            result += Coord2D(col, row)
-        }
-    }
-    return result
+    return coord2D.adjacent(false)
+        .filterIn(first().indices, indices)
 }
 
 private const val testInput1 = """2199943210

@@ -1,6 +1,7 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
 import com.github.ferinagy.adventOfCode.Coord2D
+import com.github.ferinagy.adventOfCode.filterIn
 
 fun main(args: Array<String>) {
     println("Part1:")
@@ -91,22 +92,9 @@ private class OctopusCave(input: String) {
     }
 
     private fun Octopus.neighbors(): List<Octopus> {
-        val diffs = listOf(
-            Coord2D(-1, -1),
-            Coord2D(0, -1),
-            Coord2D(1, -1),
-            Coord2D(-1, 0),
-            Coord2D(1, 0),
-            Coord2D(-1, 1),
-            Coord2D(0, 1),
-            Coord2D(1, 1)
-        )
+        val diffs = coord.adjacent(true).filterIn(area.first().indices, area.indices)
 
-        return diffs.mapNotNull {
-            val newY = coord.y + it.y
-            val newX = coord.x + it.x
-            if (newY in area.indices && newX in area[newY].indices) area[newY][newX] else null
-        }
+        return diffs.map {  area[it.y][it.x] }
     }
 }
 
