@@ -2,6 +2,10 @@ package com.github.ferinagy.adventOfCode.aoc2021
 
 import com.github.ferinagy.adventOfCode.Coord3D
 import kotlin.math.abs
+import kotlin.system.measureTimeMillis
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 fun main(args: Array<String>) {
     println("Part1:")
@@ -16,6 +20,7 @@ fun main(args: Array<String>) {
     println(real2)
 }
 
+@OptIn(ExperimentalTime::class)
 private fun solve(input: String): Pair<Int, Int> {
     val rawScanners = parse(input)
     val scanners = rawScanners.map { (name, allBeacons) ->
@@ -37,17 +42,21 @@ private fun solve(input: String): Pair<Int, Int> {
     outer@ while (toPlace.isNotEmpty()) {
         val current = toPlace.removeFirst()
 
-        val candidates = current.beacons.flatMap { currentBeacon ->
-            fixed.flatMap { scanner ->
-                scanner.beacons.flatMap { fixedBeacon -> currentBeacon.getPossibleScanners(fixedBeacon) }.toSet()
-            }.toSet()
-        }.toSet()
+        for (currentBeacon in current.beacons.drop(11)) {
+            for (fixedScanner in fixed) {
+                for (fixedBeacon in fixedScanner.beacons.drop(11)) {
+                    val possibleScanners = currentBeacon.getPossibleScanners(fixedBeacon)
+                    if (possibleScanners.isEmpty()) continue
 
-        for ((position, rotation) in candidates) {
-            val placedScanner = current.place(position, rotation)
-            if (verifyScanner(placedScanner, fixed)) {
-                fixed.add(placedScanner)
-                continue@outer
+                    val (position, rotation) = possibleScanners.single()
+
+                    val placedScanner = current.place(position, rotation)
+                    val verified = verifyScanner(placedScanner, fixed)
+                    if (verified) {
+                        fixed.add(placedScanner)
+                        continue@outer
+                    }
+                }
             }
         }
 
@@ -74,9 +83,7 @@ private fun verifyScanner(scanner: PlacedScanner, placedScanners: List<PlacedSca
         val othersInRange = otherScanner.beacons.filter { scanner.isInRange(it) }.map { it.position }.toSet()
         val inRangeOfOther = scanner.beacons.filter { otherScanner.isInRange(it) }.map { it.position }.toSet()
 
-        val x = othersInRange - inRangeOfOther
-        val y = inRangeOfOther - othersInRange
-        x.isEmpty() && y.isEmpty()
+        (othersInRange - inRangeOfOther).isEmpty() && (inRangeOfOther - othersInRange).isEmpty()
     }
 }
 
@@ -102,14 +109,14 @@ private fun UnplacedScanner.place(position: Coord3D, rotation: Int): PlacedScann
 
 private data class UnplacedBeacon(val positions: List<Coord3D>, val relativePositions: List<Set<Coord3D>>)
 
-private fun UnplacedBeacon.getPossibleScanners(other: PlacedBeacon): Set<Pair<Coord3D, Int>> {
-    return relativePositions.mapIndexed { rotation, beacon ->
-        rotation to other.relativePositions.intersect(beacon).size
-    }.mapNotNull { (rotation, common)  ->
+private fun UnplacedBeacon.getPossibleScanners(other: PlacedBeacon): List<Pair<Coord3D, Int>> {
+    return relativePositions.mapIndexedNotNull { rotation, beacon ->
+        val common = other.relativePositions.intersect(beacon).size
+
         if (common < 11) null else {
             positions[rotation].relativePosition(other.position) to rotation
         }
-    }.toSet()
+    }
 }
 
 private data class PlacedBeacon(val position: Coord3D, val relativePositions: Set<Coord3D>)
