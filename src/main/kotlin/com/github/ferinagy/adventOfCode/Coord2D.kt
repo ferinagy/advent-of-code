@@ -1,5 +1,7 @@
 package com.github.ferinagy.adventOfCode
 
+import kotlin.math.abs
+
 @JvmInline value class Coord2DValue(val value: Long) {
 }
 
@@ -25,3 +27,15 @@ data class Coord2D(val x: Int, val y: Int) {
 }
 
 fun List<Coord2D>.filterIn(xRange: IntRange, yRange: IntRange) = filter { it.x in xRange && it.y in yRange }
+
+data class Coord3D(val x: Int, val y: Int, val z: Int) {
+
+    companion object {
+        fun parse(input: String) = input.split(",").let { (x, y, z) -> Coord3D(x.toInt(), y.toInt(), z.toInt()) }
+    }
+
+    operator fun plus(other: Coord3D) = copy(x = x + other.x, y = y + other.y, z = z + other.z)
+
+    val manhattanDist: Int
+        get() = abs(x) + abs(y) + abs(z)
+}
