@@ -24,7 +24,7 @@ private fun part1(input: String): Int {
 private fun part2(input: String): Int {
     val (rules, target) = parse(input)
 
-    val artificial = rules.toCnf()
+    val cnfRules = rules.toCnf()
     val cache = mutableMapOf<CacheKey, Int>()
 
     for (s in target.indices) {
@@ -34,7 +34,7 @@ private fun part2(input: String): Int {
     for (l in 2 .. target.size) { // length of span
         for (s in 0 .. target.size - l) { // start of span
             for (p in 1 until l) { // partition of span
-                artificial.forEach { rule ->
+                cnfRules.forEach { rule ->
                     val left = CacheKey(p, s, rule.right[0])
                     val right = CacheKey(l - p, s + p, rule.right[1])
                     if (left in cache && right in cache) {
@@ -122,7 +122,6 @@ HOH"""
 private const val testInput2 = """e => H
 e => O
 H => HO
-H => HOHO
 H => OH
 O => HH
 
