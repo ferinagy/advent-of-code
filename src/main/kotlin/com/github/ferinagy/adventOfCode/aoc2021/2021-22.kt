@@ -49,42 +49,26 @@ private fun part2(input: String): Long {
     val cuboidsOn = mutableSetOf<Cuboid>()
     val queue = ArrayDeque<Cuboid>()
     ops.forEach { op ->
-        if (op.turnOn) {
-            queue += op.cuboid
-            while (queue.isNotEmpty()) {
-                val current = queue.removeFirst()
-                var didIntersect = false
-                for (c in cuboidsOn) {
-                    val intersect = current.intersect(c)
-                    if (intersect != null) {
-                        didIntersect = true
-                        val (inter, first, second) = intersect
-                        cuboidsOn.remove(c)
-                        cuboidsOn += inter
-                        cuboidsOn += second
-                        queue += first
+        queue += op.cuboid
+        while (queue.isNotEmpty()) {
+            val current = queue.removeFirst()
+            var didIntersect = false
+            for (c in cuboidsOn) {
+                if (!current.intersects(c)) continue
 
-                        break
-                    }
+                didIntersect = true
+                val (inter, first, second) = current.intersect(c)
+                cuboidsOn.remove(c)
+                if (op.turnOn) {
+                    cuboidsOn += inter
                 }
+                cuboidsOn += second
+                queue += first
 
-                if (!didIntersect) cuboidsOn += current
+                break
             }
-        } else {
-            queue += op.cuboid
-            while (queue.isNotEmpty()) {
-                val current = queue.removeFirst()
-                for (c in cuboidsOn) {
-                    val intersect = current.intersect(c)
-                    if (intersect != null) {
-                        val (_, first, second) = intersect
-                        cuboidsOn.remove(c)
-                        cuboidsOn += second
-                        queue += first
-                        break
-                    }
-                }
-            }
+
+            if (!didIntersect && op.turnOn) cuboidsOn += current
         }
     }
 
@@ -101,11 +85,21 @@ private val Cuboid.zRange get() = start.z..end.z
 
 private data class IntersectionResult(val intersect: Cuboid, val fromFirst: List<Cuboid>, val fromSecond: List<Cuboid>)
 
-private fun Cuboid.intersect(other: Cuboid): IntersectionResult? {
+private fun Cuboid.intersects(other: Cuboid): Boolean {
+    val startX = max(start.x, other.start.x)
+    val startY = max(start.y, other.start.y)
+    val startZ = max(start.z, other.start.z)
+    val endX = min(end.x, other.end.x)
+    val endY = min(end.y, other.end.y)
+    val endZ = min(end.z, other.end.z)
+
+    return startX <= endX && startY <= endY && startZ <= endZ
+}
+
+private fun Cuboid.intersect(other: Cuboid): IntersectionResult {
     val c1 = Coord3D(max(start.x, other.start.x), max(start.y, other.start.y), max(start.z, other.start.z))
     val c2 = Coord3D(min(end.x, other.end.x), min(end.y, other.end.y), min(end.z, other.end.z))
     val intersect = Cuboid(c1, c2)
-    if (intersect.size() == 0L) return null
 
     val first = this - intersect
     val second = other - intersect
