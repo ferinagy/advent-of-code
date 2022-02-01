@@ -43,8 +43,6 @@ private fun parse(input: String): List<Pair<Coord2D, Coord2D>> = input.lines()
         it.split(" -> ").let { (c1, c2) -> Coord2D.parse(c1) to Coord2D.parse(c2) }
     }
 
-private fun increasingRange(x: Int, y: Int): IntRange = if (x <= y) x..y else y..x
-
 @OptIn(ExperimentalStdlibApi::class)
 private fun range(start: Coord2D, end: Coord2D): List<Coord2D> = buildList {
     val dx = end.x - start.x

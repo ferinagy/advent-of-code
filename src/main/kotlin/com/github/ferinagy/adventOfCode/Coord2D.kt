@@ -11,6 +11,9 @@ data class Coord2D(val x: Int, val y: Int) {
         fun parse(input: String) = input.split(",").let { (x, y) -> Coord2D(x.toInt(), y.toInt()) }
     }
 
+    val manhattanDist: Int
+        get() = abs(x) + abs(y)
+
     @OptIn(ExperimentalStdlibApi::class)
     fun adjacent(includeDiagonals: Boolean): List<Coord2D> = buildList {
         setOf(-1 to 0, 0 to -1, 1 to 0, 0 to 1).forEach {
