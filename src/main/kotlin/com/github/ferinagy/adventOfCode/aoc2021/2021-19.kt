@@ -1,13 +1,11 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
 import com.github.ferinagy.adventOfCode.Coord3D
+import com.github.ferinagy.adventOfCode.transpose
 import kotlin.math.abs
-import kotlin.system.measureTimeMillis
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     val (test1, test2) = solve(testInput1)
     println(test1)
@@ -122,19 +120,6 @@ private fun UnplacedBeacon.getPossibleScanners(other: PlacedBeacon): List<Pair<C
 private data class PlacedBeacon(val position: Coord3D, val relativePositions: Set<Coord3D>)
 
 fun Coord3D.relativePosition(other: Coord3D) = Coord3D(other.x - x, other.y - y, other.z - z)
-
-fun <T> List<List<T>>.transpose(): List<List<T>> {
-    if (isEmpty()) return emptyList()
-
-    val innerSize = size
-    val outerSize = first().size
-
-    return List(outerSize) { outer ->
-        List(innerSize) { inner ->
-            this[inner][outer]
-        }
-    }
-}
 
 @OptIn(ExperimentalStdlibApi::class)
 fun Coord3D.possiblePositions(): List<Coord3D> {
