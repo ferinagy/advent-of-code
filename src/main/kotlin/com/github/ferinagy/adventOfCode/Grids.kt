@@ -16,38 +16,91 @@ interface Grid<T>: Iterable<T> {
 
 class BooleanGrid(override val width: Int, override val height: Int, initBlock: (Int, Int) -> Boolean): Grid<Boolean> {
 
-    private val array = BooleanArray(width * height) { initBlock(it / width, it % width) }
+    constructor(width: Int, height: Int, default: Boolean): this(width, height, { _, _  -> default })
 
-    override operator fun get(x: Int, y: Int): Boolean = array[x * width + y]
+    private val array = BooleanArray(width * height) { initBlock(it % width, it / width) }
+
+    override operator fun get(x: Int, y: Int): Boolean = array[x + y * width]
     override operator fun set(x: Int, y: Int, value: Boolean) {
-        array[x * width + y] = value
+        array[x + y * width] = value
     }
 
     override fun iterator() = array.iterator()
+
+    fun count() = array.count { it }
+
+    override fun toString(): String = buildString {
+        append('┌')
+        repeat(width) { append('─') }
+        append('┐')
+        append('\n')
+        for (y in 0 until height) {
+            append('│')
+            for (x in 0 until width) {
+                if (get(x, y)) append('#') else append('.')
+            }
+            append('│')
+            append('\n')
+        }
+        append('└')
+        repeat(width) { append('─') }
+        append('┘')
+    }
+
+    fun copyRow(row: Int): BooleanArray = array.copyOfRange(row * width, row.inc() * width)
+
+    fun copyColumn(col: Int): BooleanArray = BooleanArray(height) { get(col, it) }
 }
 
 class IntGrid(override val width: Int, override val height: Int, initBlock: (Int, Int) -> Int): Grid<Int> {
 
-    private val array = IntArray(width * height) { initBlock(it / width, it % width) }
+    private val array = IntArray(width * height) { initBlock(it % width, it / width) }
 
-    override operator fun get(x: Int, y: Int): Int = array[x * width + y]
+    override operator fun get(x: Int, y: Int): Int = array[x + y * width]
     override operator fun set(x: Int, y: Int, value: Int) {
-        array[x * width + y] = value
+        array[x + y * width] = value
     }
 
     override fun iterator() = array.iterator()
+
+    override fun toString(): String = buildString {
+        val max = array.maxOrNull()!!
+        val size = max.toString().length + 1
+        val format = "%${size}d"
+
+        for (y in 0 until height) {
+            for (x in 0 until width) { append(format.format(get(x, y))) }
+            append('\n')
+        }
+    }
 }
 
 class CharGrid(override val width: Int, override val height: Int, initBlock: (Int, Int) -> Char): Grid<Char> {
 
-    private val array = CharArray(width * height) { initBlock(it / width, it % width) }
+    private val array = CharArray(width * height) { initBlock(it % width, it / width) }
 
-    override operator fun get(x: Int, y: Int): Char = array[x * width + y]
+    override operator fun get(x: Int, y: Int): Char = array[x + y * width]
     override operator fun set(x: Int, y: Int, value: Char) {
-        array[x * width + y] = value
+        array[x + y * width] = value
     }
 
     override fun iterator() = array.iterator()
+
+    override fun toString(): String = buildString {
+        append('┌')
+        repeat(width) { append('─') }
+        append('┐')
+        append('\n')
+        for (y in 0 until height) {
+            append('│')
+            for (x in 0 until width) { append(get(x, y)) }
+            append('│')
+            append('\n')
+        }
+        append('└')
+        repeat(width) { append('─') }
+        append('┘')
+    }
 }
 
 fun List<String>.toBooleanGrid(init: (Char) -> Boolean): BooleanGrid {

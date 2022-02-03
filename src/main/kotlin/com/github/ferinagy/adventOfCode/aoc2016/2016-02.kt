@@ -5,7 +5,7 @@ import com.github.ferinagy.adventOfCode.get
 import com.github.ferinagy.adventOfCode.toCharGrid
 import com.github.ferinagy.adventOfCode.toIntGrid
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1(testInput1))
     println(part1(input))
