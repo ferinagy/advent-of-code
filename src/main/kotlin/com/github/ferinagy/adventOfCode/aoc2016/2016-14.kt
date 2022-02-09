@@ -1,8 +1,9 @@
 package com.github.ferinagy.adventOfCode.aoc2016
 
+import com.github.ferinagy.adventOfCode.component1
+import com.github.ferinagy.adventOfCode.component2
 import com.github.ferinagy.adventOfCode.md5
 import com.github.ferinagy.adventOfCode.md5toBytes
-import kotlin.experimental.and
 
 fun main() {
     println("Part1:")
@@ -93,10 +94,6 @@ private fun ByteArray.toHexByteArray(): ByteArray {
 }
 
 private fun Byte.toHexByte(): Byte = if (this < 10) (this + 48).toByte() else (this + 87).toByte()
-
-private operator fun Byte.component1(): Byte = (toUByte() / 16u).toByte()
-
-private operator fun Byte.component2(): Byte = this and 0xf
 
 private const val testInput1 = """abc"""
 
