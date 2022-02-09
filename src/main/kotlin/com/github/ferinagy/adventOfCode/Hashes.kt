@@ -2,10 +2,12 @@ package com.github.ferinagy.adventOfCode
 
 import java.security.MessageDigest
 
-fun String.md5toBytes(): ByteArray {
+fun String.md5toBytes() = toByteArray().md5()
+
+fun ByteArray.md5(): ByteArray {
     val md = MessageDigest.getInstance("MD5")
 
-    return md.digest(toByteArray())
+    return md.digest(this)
 }
 
 private val ZERO_BYTE: Byte = 0
