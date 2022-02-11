@@ -1,50 +1,78 @@
 package com.github.ferinagy.adventOfCode.aoc2016
 
 class AssembunnyComputer {
-    val registers = mutableMapOf(
-        "a" to 0L,
-        "b" to 0L,
-        "c" to 0L,
-        "d" to 0L,
+
+    data class State(
+        val registers: Map<String, Long> = mapOf(
+            "a" to 0L,
+            "b" to 0L,
+            "c" to 0L,
+            "d" to 0L,
+        ),
+        val ip: Int = 0,
+        val output: List<Long> = emptyList()
     )
+
+    var state = State()
+
+    fun setRegister(r: String, value: Long) {
+        val registers = state.registers.toMutableMap()
+        registers[r] = value
+        state = state.copy(registers = registers.toMap())
+    }
 
     fun execute(originalInstructions: List<Instruction>) {
         val instructions = originalInstructions.toMutableList()
-        var ip = 0
-        while (ip in instructions.indices) {
-            when (val instruction = instructions[ip]) {
-                is Instruction.Cpy -> {
-                    if (instruction.into is Argument.Register) {
-                        registers[instruction.into.value] = instruction.from.get()
-                    }
-                }
-                is Instruction.Dec -> {
-                    if (instruction.register is Argument.Register) {
-                        registers[instruction.register.value] = registers[instruction.register.value]!! - 1
-                    }
-                }
-                is Instruction.Inc -> {
-                    if (instruction.register is Argument.Register) {
-                        registers[instruction.register.value] = registers[instruction.register.value]!! + 1
-                    }
-                }
-                is Instruction.Jnz -> {
-                    val check = instruction.value.get()
-                    if (check != 0L) {
-                        ip += instruction.offset.get().toInt()
-                        continue
-                    }
-                }
-                is Instruction.Tgl -> {
-                    val index = ip + instruction.offset.get().toInt()
-                    if (index in instructions.indices) {
-                        instructions[index] = instructions[index].toggle()
-                    }
+
+        while (state.ip in instructions.indices) {
+            step(instructions)
+        }
+    }
+
+    fun step(instructions: MutableList<Instruction>) {
+        var ip = state.ip
+        val registers = state.registers.toMutableMap()
+        val output = state.output.toMutableList()
+
+        when (val instruction = instructions[ip]) {
+            is Instruction.Cpy -> {
+                if (instruction.into is Argument.Register) {
+                    registers[instruction.into.value] = instruction.from.get(state)
                 }
             }
-
-            ip++
+            is Instruction.Dec -> {
+                if (instruction.register is Argument.Register) {
+                    registers[instruction.register.value] = registers[instruction.register.value]!! - 1
+                }
+            }
+            is Instruction.Inc -> {
+                if (instruction.register is Argument.Register) {
+                    registers[instruction.register.value] = registers[instruction.register.value]!! + 1
+                }
+            }
+            is Instruction.Jnz -> {
+                val check = instruction.value.get(state)
+                if (check != 0L) {
+                    ip += instruction.offset.get(state).toInt() - 1
+                }
+            }
+            is Instruction.Tgl -> {
+                val index = ip + instruction.offset.get(state).toInt()
+                if (index in instructions.indices) {
+                    instructions[index] = instructions[index].toggle()
+                }
+            }
+            is Instruction.Out -> {
+                output += instruction.value.get(state)
+            }
         }
+
+        ip++
+        state = State(
+            registers = registers.toMap(),
+            ip = ip,
+            output = output.toList()
+        )
     }
 
     private fun Instruction.toggle() = when(this) {
@@ -53,11 +81,12 @@ class AssembunnyComputer {
         is Instruction.Inc -> Instruction.Dec(register)
         is Instruction.Jnz -> Instruction.Cpy(value, offset)
         is Instruction.Tgl -> Instruction.Inc(offset)
+        is Instruction.Out -> Instruction.Inc(value)
     }
 
-    fun Argument.get(): Long = when (this) {
+    fun Argument.get(state: State): Long = when (this) {
         is Argument.Constant -> value
-        is Argument.Register -> registers[value]!!
+        is Argument.Register -> state.registers[value]!!
     }
 
     sealed class Argument {
@@ -77,6 +106,7 @@ class AssembunnyComputer {
         class Dec(val register: Argument) : Instruction()
         class Jnz(val value: Argument, val offset: Argument) : Instruction()
         class Tgl(val offset: Argument) : Instruction()
+        class Out(val value: Argument) : Instruction()
 
         companion object {
             fun parse(input: String): Instruction {
@@ -95,6 +125,10 @@ class AssembunnyComputer {
                         val (offset) = tglRegex.matchEntire(input)!!.destructured
                         Tgl(Argument.parse(offset))
                     }
+                    outRegex.matches(input) -> {
+                        val (value) = outRegex.matchEntire(input)!!.destructured
+                        Out(Argument.parse(value))
+                    }
                     else -> error("Unknown instruction: $input")
                 }
             }
@@ -107,3 +141,4 @@ private val incRegex = """inc (-?\w+)""".toRegex()
 private val decRegex = """dec (-?\w+)""".toRegex()
 private val jnzRegex = """jnz (-?\w+) (-?\w+)""".toRegex()
 private val tglRegex = """tgl (-?\w+)""".toRegex()
+private val outRegex = """out (-?\w+)""".toRegex()

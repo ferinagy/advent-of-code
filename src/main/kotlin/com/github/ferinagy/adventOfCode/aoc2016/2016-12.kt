@@ -17,17 +17,17 @@ private fun part1(input: String): Long {
 
     comp.execute(instructions)
 
-    return comp.registers["a"]!!
+    return comp.state.registers["a"]!!
 }
 
 private fun part2(input: String): Long {
     val comp = AssembunnyComputer()
     val instructions = input.lines().map { AssembunnyComputer.Instruction.parse(it) }
 
-    comp.registers["c"] = 1
+    comp.setRegister("c", 1)
     comp.execute(instructions)
 
-    return comp.registers["a"]!!
+    return comp.state.registers["a"]!!
 }
 
 private const val testInput1 = """cpy 41 a

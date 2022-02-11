@@ -15,11 +15,11 @@ fun main() {
 private fun solve(input: String, value: Int): Long {
     val comp = AssembunnyComputer()
     val instructions = input.lines().map { AssembunnyComputer.Instruction.parse(it) }
-    comp.registers["a"] = value.toLong()
+    comp.setRegister("a", value.toLong())
 
     comp.execute(instructions)
 
-    return comp.registers["a"]!!
+    return comp.state.registers["a"]!!
 }
 
 private fun solve2(value: Int) = 81 * 94 + factorial(value)
