@@ -2,14 +2,13 @@ package com.github.ferinagy.adventOfCode
 
 import kotlin.math.abs
 
-@JvmInline value class Coord2DValue(val value: Long) {
-}
-
 data class Coord2D(val x: Int, val y: Int) {
 
     companion object {
         fun parse(input: String) = input.split(",").let { (x, y) -> Coord2D(x.toInt(), y.toInt()) }
     }
+
+    override fun toString() = "[$x, $y]"
 
     val manhattanDist: Int
         get() = abs(x) + abs(y)
