@@ -1,37 +1,41 @@
-fun main(args: Array<String>) {
+package com.github.ferinagy.adventOfCode.aoc2015
+
+fun main() {
     println("Part1:")
+    println(calculatePaper(testInput1))
     println(calculatePaper(input))
 
     println()
     println("Part2:")
+    println(calculateRibbon(testInput1))
     println(calculateRibbon(input))
 }
 
 private fun calculatePaper(input: String): Int {
-    return input.lines().map {
-        val (x, y, z) = it.split('x').map { it.toInt() }
+    return input.lines().map { line ->
+        val (x, y, z) = line.split('x').map { it.toInt() }
         Triple(x, y, z)
-    }.map { (x, y, z) ->
-        val s1 = x * y  * 2
-        val s2 = x * z  * 2
-        val s3 = y * z  * 2
+    }.sumOf { (x, y, z) ->
+        val s1 = x * y * 2
+        val s2 = x * z * 2
+        val s3 = y * z * 2
 
         s1 + s2 + s3 + (minOf(s1, s2, s3) / 2)
-    }.sum()
+    }
 }
 
 private fun calculateRibbon(input: String): Int {
-    return input.lines().map {
-        val (x, y, z) = it.split('x').map { it.toInt() }
+    return input.lines().map { line ->
+        val (x, y, z) = line.split('x').map { it.toInt() }
         Triple(x, y, z)
-    }.map { (x, y, z) ->
+    }.sumOf { (x, y, z) ->
         val bow = x * y * z
         val s1 = x + y
         val s2 = x + z
         val s3 = y + z
 
         bow + minOf(s1, s2, s3) * 2
-    }.sum()
+    }
 }
 
 private const val testInput1 = """2x3x4

@@ -3,7 +3,7 @@ package com.github.ferinagy.adventOfCode.aoc2016
 import java.io.File
 
 fun main() {
-    val input = File("src", "input-2016-07.txt").readText()
+    val input = File("src", "com.github.ferinagy.adventOfCode.aoc2015.com.github.ferinagy.adventOfCode.aoc2015.com.github.ferinagy.adventOfCode.aoc2015.input-2016-07.txt").readText()
 
     println("Part1:")
     println(part1(testInput1))

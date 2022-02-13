@@ -1,5 +1,7 @@
 package com.github.ferinagy.adventOfCode
 
+import java.util.BitSet
+
 interface Grid<T>: Iterable<T> {
 
     val width: Int
@@ -18,16 +20,31 @@ class BooleanGrid(override val width: Int, override val height: Int, initBlock: 
 
     constructor(width: Int, height: Int, default: Boolean): this(width, height, { _, _  -> default })
 
-    private val array = BooleanArray(width * height) { initBlock(it % width, it / width) }
-
-    override operator fun get(x: Int, y: Int): Boolean = array[x + y * width]
-    override operator fun set(x: Int, y: Int, value: Boolean) {
-        array[x + y * width] = value
+    private val bitSet = BitSet(width * height).apply {
+        repeat(width * height) {
+            set(it, initBlock(it % width, it / width))
+        }
     }
 
-    override fun iterator() = array.iterator()
+    override operator fun get(x: Int, y: Int): Boolean = bitSet[x + y * width]
+    override operator fun set(x: Int, y: Int, value: Boolean) {
+        bitSet[x + y * width] = value
+    }
 
-    fun count() = array.count { it }
+    override fun iterator() = object : Iterator<Boolean> {
+        var current = 0
+
+        override fun hasNext(): Boolean {
+            return current < width * height
+        }
+
+        override fun next(): Boolean {
+            return bitSet[current].also { current++ }
+        }
+
+    }
+
+    fun count() = bitSet.cardinality()
 
     override fun toString(): String = buildString {
         append('┌')
@@ -47,7 +64,7 @@ class BooleanGrid(override val width: Int, override val height: Int, initBlock: 
         append('┘')
     }
 
-    fun copyRow(row: Int): BooleanArray = array.copyOfRange(row * width, row.inc() * width)
+    fun copyRow(row: Int): BooleanArray = BooleanArray(width) { get(it, row) }
 
     fun copyColumn(col: Int): BooleanArray = BooleanArray(height) { get(col, it) }
 }
@@ -55,6 +72,8 @@ class BooleanGrid(override val width: Int, override val height: Int, initBlock: 
 class IntGrid(override val width: Int, override val height: Int, initBlock: (Int, Int) -> Int): Grid<Int> {
 
     private val array = IntArray(width * height) { initBlock(it % width, it / width) }
+
+    constructor(width: Int, height: Int, default: Int): this(width, height, { _, _ -> default})
 
     override operator fun get(x: Int, y: Int): Int = array[x + y * width]
     override operator fun set(x: Int, y: Int, value: Int) {
