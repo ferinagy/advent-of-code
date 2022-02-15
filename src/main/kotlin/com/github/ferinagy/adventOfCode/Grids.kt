@@ -138,3 +138,5 @@ fun List<List<Int>>.toIntGrid(): IntGrid {
 }
 
 operator fun <T> Grid<T>.get(position: Coord2D): T = get(position.x, position.y)
+operator fun <T> Grid<T>.set(position: Coord2D, value: T) = set(position.x, position.y, value)
+operator fun <T> Grid<T>.contains(position: Coord2D) = position.x in xRange && position.y in yRange
