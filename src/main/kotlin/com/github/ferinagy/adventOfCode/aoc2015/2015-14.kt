@@ -2,20 +2,21 @@ package com.github.ferinagy.adventOfCode.aoc2015
 
 import kotlin.math.min
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
+    println(part1(testInput1, 1000))
     println(part1(input))
 
     println()
     println("Part2:")
+    println(part2(testInput1, 1000))
     println(part2(input))
 }
 
-private fun part1(input: String): Int {
+private fun part1(input: String, totalTime: Int = 2503): Int {
     val reindeer = input.lines().map { Reindeer.parse(it) }
-    val totalTime = 2503
 
-    val dists = reindeer.map {
+    return reindeer.maxOf {
         var traveled = 0
         var remainingTime = totalTime
         while (0 < remainingTime) {
@@ -24,23 +25,18 @@ private fun part1(input: String): Int {
             remainingTime -= it.flyTime + it.restTime
         }
 
-
         traveled
     }
-
-    return dists.maxOrNull()!!
 }
 
-private fun part2(input: String): Int {
+private fun part2(input: String, totalTime: Int = 2503): Int {
     val reindeer = input.lines().map { Reindeer.parse(it) }
-    val totalTime = 2503
 
     val points = IntArray(reindeer.size)
     for (i in 1..totalTime) {
         reindeer.forEach { it.tick() }
 
-        val dists = reindeer.map { it.dist }
-        val max = dists.maxOrNull()
+        val max = reindeer.maxOfOrNull { it.dist }
 
         reindeer.forEachIndexed { index, r ->
             if (r.dist == max) points[index]++
@@ -50,7 +46,7 @@ private fun part2(input: String): Int {
     return points.maxOrNull()!!
 }
 
-private class Reindeer(val name: String, val speed: Int, val flyTime: Int, val restTime: Int) {
+private class Reindeer(val speed: Int, val flyTime: Int, val restTime: Int) {
 
     private var isFlying: Boolean = true
     private var remainingFlightTime: Int = flyTime
@@ -81,13 +77,13 @@ private class Reindeer(val name: String, val speed: Int, val flyTime: Int, val r
 
     companion object {
         fun parse(input: String): Reindeer {
-            val (name, speed, flyTime, restTime) = regex.matchEntire(input)!!.destructured
-            return Reindeer(name, speed.toInt(), flyTime.toInt(), restTime.toInt())
+            val (speed, flyTime, restTime) = regex.matchEntire(input)!!.destructured
+            return Reindeer(speed.toInt(), flyTime.toInt(), restTime.toInt())
         }
     }
 }
 
-private val regex = """(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.""".toRegex()
+private val regex = """\w+ can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.""".toRegex()
 
 private const val testInput1 = """Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.
 Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds."""

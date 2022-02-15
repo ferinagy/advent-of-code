@@ -1,40 +1,37 @@
+package com.github.ferinagy.adventOfCode.aoc2015
+
 import com.github.ferinagy.adventOfCode.TspGraph
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
+    println(part1(testInput1))
     println(part1(input))
 
     println()
     println("Part2:")
+    println(part2(testInput1))
     println(part2(input))
 }
 
 private fun part1(input: String): Int {
-    val map = mutableMapOf<Set<String>, Int>()
-    input.lines().map {
-        val (p1, op, value, p2) = regex.matchEntire(it)!!.destructured
+    val graph = parse(input)
 
-        val set = setOf(p1, p2)
-        val newValue = map.getOrDefault(set, 0) +  if (op == "gain") value.toInt() else -value.toInt()
-        map[set] = newValue
-    }
-
-    val graph = TspGraph()
-    map.forEach { (key, value) ->
-        val (p1, p2) = key.toList()
-        graph.addBidirectionalEdge(p1, p2, value)
-    }
-
-    return graph.solveCircularTsp() { o1, o2 -> o2 - o1 }
+    return graph.solveCircularTsp { o1, o2 -> o2 - o1 }
 }
 
 private fun part2(input: String): Int {
+    val graph = parse(input)
+
+    return graph.solveTsp { o1, o2 -> o2 - o1 }
+}
+
+private fun parse(input: String): TspGraph {
     val map = mutableMapOf<Set<String>, Int>()
     input.lines().map {
         val (p1, op, value, p2) = regex.matchEntire(it)!!.destructured
 
         val set = setOf(p1, p2)
-        val newValue = map.getOrDefault(set, 0) +  if (op == "gain") value.toInt() else -value.toInt()
+        val newValue = map.getOrDefault(set, 0) + if (op == "gain") value.toInt() else -value.toInt()
         map[set] = newValue
     }
 
@@ -43,8 +40,7 @@ private fun part2(input: String): Int {
         val (p1, p2) = key.toList()
         graph.addBidirectionalEdge(p1, p2, value)
     }
-
-    return graph.solveTsp { o1, o2 -> o2 - o1 }
+    return graph
 }
 
 private val regex = """(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+).""".toRegex()

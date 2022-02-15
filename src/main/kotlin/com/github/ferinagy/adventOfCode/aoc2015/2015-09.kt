@@ -2,12 +2,14 @@ package com.github.ferinagy.adventOfCode.aoc2015
 
 import com.github.ferinagy.adventOfCode.TspGraph
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
+    println(part1(testInput1))
     println(part1(input))
 
     println()
     println("Part2:")
+    println(part2(testInput1))
     println(part2(input))
 }
 

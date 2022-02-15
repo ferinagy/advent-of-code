@@ -1,37 +1,28 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
+    println(part1(testInput1,"g"))
     println(part1(input,"a"))
 
     println()
     println("Part2:")
-    println(part2(input,"a"))
+    println(part2())
 }
 
 private fun part1(input: String, wire: String): UShort {
-    val map = mutableMapOf<String, String>()
-
-    input.lines().forEach {
-        val (src, dst) = it.split(" -> ")
-        map[dst] = src
-    }
+    val map = parse(input)
 
     val gates = LogicGates(map)
     return gates.solveWire(wire)
 }
 
-private fun part2(input: String, wire: String): UShort {
-    val map = mutableMapOf<String, String>()
-
-    input.lines().forEach {
-        val (src, dst) = it.split(" -> ")
-        map[dst] = src
-    }
+private fun part2(): UShort {
+    val map = parse(input)
 
     map["b"] = "16076"
     val gates = LogicGates(map)
-    return gates.solveWire(wire)
+    return gates.solveWire("a")
 }
 
 private class LogicGates(private val map: Map<String, String>) {
@@ -81,6 +72,16 @@ private class LogicGates(private val map: Map<String, String>) {
 
         return result.also { solved[wire] = it }
     }
+}
+
+private fun parse(input: String): MutableMap<String, String> {
+    val map = mutableMapOf<String, String>()
+
+    input.lines().forEach {
+        val (src, dst) = it.split(" -> ")
+        map[dst] = src
+    }
+    return map
 }
 
 private const val testInput1 = """123 -> x

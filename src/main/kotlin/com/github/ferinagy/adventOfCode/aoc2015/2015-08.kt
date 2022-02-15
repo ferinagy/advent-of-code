@@ -1,23 +1,19 @@
-fun main(args: Array<String>) {
+package com.github.ferinagy.adventOfCode.aoc2015
+
+fun main() {
     println("Part1:")
+    println(part1(testInput1))
     println(part1(input))
 
     println()
     println("Part2:")
+    println(part2(testInput1))
     println(part2(input))
 }
 
-private fun part1(input: String): Int {
-    return input.lines().sumOf {
-        it.length - it.inMemory()
-    }
-}
+private fun part1(input: String) = input.lines().sumOf { it.length - it.inMemory() }
 
-private fun part2(input: String): Int {
-    return input.lines().sumOf {
-        it.inCode() - it.length
-    }
-}
+private fun part2(input: String) = input.lines().sumOf { it.inCode() - it.length }
 
 private fun String.inMemory(): Int {
     var i = 1

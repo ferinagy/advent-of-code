@@ -22,7 +22,7 @@ private fun processList(input: List<Int>): Int {
         }
     }
 
-    error("bad input")
+    error("bad com.github.ferinagy.adventOfCode.aoc2015.com.github.ferinagy.adventOfCode.aoc2015.com.github.ferinagy.adventOfCode.aoc2015.com.github.ferinagy.adventOfCode.aoc2015.input")
 }
 
 private fun parse(input: String) = input.lines()
