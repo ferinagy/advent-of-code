@@ -1,6 +1,6 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1(testInput1, 25))
     println(part1(input, 150))
@@ -41,7 +41,7 @@ private fun combinations(partial: Combo): List<Combo> {
 
 private data class Combo(val availableContainers: List<Int>, val usedContainers: List<Int>, val sum: Int)
 
-private val testInput1 = """20
+private const val testInput1 = """20
 15
 10
 5

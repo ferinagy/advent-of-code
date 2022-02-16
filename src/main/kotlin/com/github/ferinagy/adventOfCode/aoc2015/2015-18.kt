@@ -1,9 +1,12 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.BooleanGrid
 import com.github.ferinagy.adventOfCode.Coord2D
-import com.github.ferinagy.adventOfCode.filterIn
+import com.github.ferinagy.adventOfCode.toBooleanGrid
+import com.github.ferinagy.adventOfCode.contains
+import com.github.ferinagy.adventOfCode.get
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1(testInput1, 4))
     println(part1(input, 100))
@@ -15,44 +18,34 @@ fun main(args: Array<String>) {
 }
 
 private fun part1(input: String, steps: Int): Int {
-    var field = input.lines().map { line -> line.map { it == '#' } }
+    var grid = input.lines().toBooleanGrid { it == '#' }
     repeat(steps) {
-        field = field.update()
+        grid = grid.update()
     }
 
-    return field.sumOf { row -> row.count { it } }
+    return grid.count()
 }
 
 private fun part2(input: String, steps: Int): Int {
-    var field = input.lines().map { line -> line.map { it == '#' } }.stuckCorners()
+    var grid = input.lines().toBooleanGrid { it == '#' }.stuckCorners()
     repeat(steps) {
-        field = field.update().stuckCorners()
+        grid = grid.update().stuckCorners()
     }
 
-    return field.sumOf { row -> row.count { it } }
+    return grid.count()
 }
 
-private fun List<List<Boolean>>.update() = mapIndexed { row, booleans ->
-    booleans.mapIndexed { col, b ->
-        val adjacent = Coord2D(col, row).adjacent(true)
-            .filterIn(first().indices, indices)
-            .map { this[it.y][it.x] }
-            .count { it }
+private fun BooleanGrid.update(): BooleanGrid = mapIndexed { coord: Coord2D, b: Boolean ->
+    val adjacent = coord.adjacent(true).count { it in this && this[it] }
 
-        b && adjacent in 2..3 || !b && adjacent == 3
-    }
+    b && adjacent in 2..3 || !b && adjacent == 3
 }
 
-private fun List<List<Boolean>>.stuckCorners() = mapIndexed { row, booleans ->
-    if (row == 0 || row == lastIndex) {
-        booleans.mapIndexed { col, b ->
-            if (col == 0 || col == booleans.lastIndex) {
-                true
-            } else {
-                b
-            }
-        }
-    } else booleans
+private fun BooleanGrid.stuckCorners() = apply {
+    this[0, 0] = true
+    this[0, height - 1] = true
+    this[width - 1, 0] = true
+    this[width - 1, height - 1] = true
 }
 
 private const val testInput1 = """.#.#.#

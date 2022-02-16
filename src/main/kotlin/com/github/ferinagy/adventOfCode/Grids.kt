@@ -67,6 +67,8 @@ class BooleanGrid(override val width: Int, override val height: Int, initBlock: 
     fun copyRow(row: Int): BooleanArray = BooleanArray(width) { get(it, row) }
 
     fun copyColumn(col: Int): BooleanArray = BooleanArray(height) { get(col, it) }
+
+    fun mapIndexed(transform: (Coord2D, Boolean) -> Boolean) = BooleanGrid(width, height) { x, y -> transform(Coord2D(x, y), get(x, y)) }
 }
 
 class IntGrid(override val width: Int, override val height: Int, initBlock: (Int, Int) -> Int): Grid<Int> {

@@ -1,6 +1,6 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1())
 
@@ -13,23 +13,11 @@ private fun part1(): Int {
     val boss = Warrior(100, 8, 2)
     val player = Warrior(100, 0, 0)
 
-    val results = mutableListOf<Pair<Loadout, Boolean>>()
-    weapons.forEach { weapon ->
-        armors.forEach { armor ->
-            for (i in 0 until rings.lastIndex) {
-                for (j in i + 1 .. rings.lastIndex) {
-                    val loadout = Loadout(weapon, armor, rings[i], rings[j])
-                    results += loadout to player.withLoadout(loadout).fight(boss)
-                }
-            }
-        }
-    }
+    val results = simulateFights(player, boss)
 
     val (min, _) = results.filter { it.second }.minByOrNull { (loadout, _) ->
         loadout.weapon.cost + loadout.armor.cost + loadout.ring1.cost + loadout.ring2.cost
     }!!
-
-    println(min)
 
     return min.weapon.cost + min.armor.cost + min.ring1.cost + min.ring2.cost
 }
@@ -38,25 +26,28 @@ private fun part2(): Int {
     val boss = Warrior(100, 8, 2)
     val player = Warrior(100, 0, 0)
 
+    val results = simulateFights(player, boss)
+
+    val (max, _) = results.filter { !it.second }.maxByOrNull { (loadout, _) ->
+        loadout.weapon.cost + loadout.armor.cost + loadout.ring1.cost + loadout.ring2.cost
+    }!!
+
+    return max.weapon.cost + max.armor.cost + max.ring1.cost + max.ring2.cost
+}
+
+private fun simulateFights(player: Warrior, boss: Warrior): MutableList<Pair<Loadout, Boolean>> {
     val results = mutableListOf<Pair<Loadout, Boolean>>()
     weapons.forEach { weapon ->
         armors.forEach { armor ->
             for (i in 0 until rings.lastIndex) {
-                for (j in i + 1 .. rings.lastIndex) {
+                for (j in i + 1..rings.lastIndex) {
                     val loadout = Loadout(weapon, armor, rings[i], rings[j])
                     results += loadout to player.withLoadout(loadout).fight(boss)
                 }
             }
         }
     }
-
-    val (max, _) = results.filter { !it.second }.maxByOrNull { (loadout, _) ->
-        loadout.weapon.cost + loadout.armor.cost + loadout.ring1.cost + loadout.ring2.cost
-    }!!
-
-    println(max)
-
-    return max.weapon.cost + max.armor.cost + max.ring1.cost + max.ring2.cost
+    return results
 }
 
 private data class Warrior(val hp: Int, val damage: Int, val armor: Int)

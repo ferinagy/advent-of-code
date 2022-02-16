@@ -1,15 +1,15 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
-    println(part1(input))
+    println(part1())
 
     println()
     println("Part2:")
-    println(part2(input))
+    println(part2())
 }
 
-private fun part1(input: String): Int {
+private fun part1(): Int {
     val infos = input.lines().map { SueInfo.parse(it) }
 
     val tape = """
@@ -24,14 +24,12 @@ private fun part1(input: String): Int {
         cars: 2
         perfumes: 1
     """.trimIndent()
-        .lines()
-        .map { it.split(": ").let { (a, b) -> a to b.toInt() } }
-        .toMap()
+        .lines().associate { it.split(": ").let { (a, b) -> a to b.toInt() } }
 
     return infos.single { it.map.all { (key, value) -> tape[key] == value } }.num
 }
 
-private fun part2(input: String): Int {
+private fun part2(): Int {
     val infos = input.lines().map { SueInfo.parse(it) }
 
     val tape = mapOf(
@@ -65,17 +63,6 @@ private data class SueInfo(val num: Int, val map: Map<String, Int>) {
 }
 
 private val regex = """Sue (\d+): (\w+): (\d+), (\w+): (\d+), (\w+): (\d+)""".toRegex()
-
-private const val tape = """children: 3
-cats: 7
-samoyeds: 2
-pomeranians: 3
-akitas: 0
-vizslas: 0
-goldfish: 5
-trees: 3
-cars: 2
-perfumes: 1"""
 
 private const val input = """Sue 1: goldfish: 6, trees: 9, akitas: 0
 Sue 2: goldfish: 7, trees: 1, akitas: 0
