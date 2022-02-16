@@ -1,11 +1,12 @@
 package com.github.ferinagy.adventOfCode.aoc2017
 
 import com.github.ferinagy.adventOfCode.Coord2D
-import com.github.ferinagy.adventOfCode.IntGrid
-import com.github.ferinagy.adventOfCode.contains
-import com.github.ferinagy.adventOfCode.get
-import com.github.ferinagy.adventOfCode.set
-import kotlin.math.sqrt
+import kotlin.collections.Map
+import kotlin.collections.contains
+import kotlin.collections.filter
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
+import kotlin.collections.sumOf
 
 fun main() {
     println("Part1:")
@@ -21,30 +22,27 @@ fun main() {
 private fun part1(input: Int): Int {
     var counter = 2
     return solve(
-        input,
-        isDone = { grid, position -> grid[position] == input },
+        isDone = { it == input },
         getValue = { _, _ -> counter++ }
     ).first
 }
 
 private fun part2(input: Int): Int {
     return solve(
-        input,
-        isDone = { grid, position -> grid[position] > input },
+        isDone = { it >= input },
         getValue = { grid, position ->
-            position.adjacent(includeDiagonals = true).filter { it in grid }.sumOf { grid[it] }
+            position.adjacent(includeDiagonals = true).filter { it in grid }.sumOf { grid[it]!! }
         }
     ).second
 }
 
 private fun solve(
-    input: Int,
-    isDone:  (IntGrid, Coord2D) -> Boolean,
-    getValue: (IntGrid, Coord2D) -> Int
+    isDone:  (Int) -> Boolean,
+    getValue: (Map<Coord2D, Int>, Coord2D) -> Int
 ): Pair<Int, Int> {
-    val size = sqrt(input.toFloat()).toInt() + 2
-    val grid = IntGrid(size, size, 0)
-    val center = Coord2D(size / 2, size / 2)
+    val grid = mutableMapOf<Coord2D, Int>()
+
+    val center = Coord2D(0, 0)
 
     grid[center] = 1
 
@@ -55,7 +53,7 @@ private fun solve(
     var sideNum = 0
     var sideStep = 0
 
-    while (!isDone(grid, position)) {
+    while (!isDone(grid.getOrDefault(position, 0))) {
         position += direction
         grid[position] = getValue(grid, position)
         sideStep++
@@ -71,7 +69,7 @@ private fun solve(
         }
     }
 
-    return (position.distanceTo(center)) to grid[position]
+    return (position.distanceTo(center)) to grid[position]!!
 }
 
 private fun Coord2D.turnLeft() = copy(x = y, y = -x)
