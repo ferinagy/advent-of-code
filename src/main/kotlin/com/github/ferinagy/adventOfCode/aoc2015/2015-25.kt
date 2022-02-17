@@ -1,7 +1,7 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
-fun main(args: Array<String>) {
-    println("Part1:")
+fun main() {
+    println("Final:")
     println(part1(3, 4))
     println(part1(2978, 3083))
 }

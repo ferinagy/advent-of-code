@@ -1,6 +1,8 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
-fun main(args: Array<String>) {
+import com.github.ferinagy.adventOfCode.searchGraph
+
+fun main() {
     println("Part1:")
     println(part1())
 
@@ -10,43 +12,24 @@ fun main(args: Array<String>) {
 }
 
 private fun part1(): Int {
-    return playGame(hard = false, print = false)
+    return playGame(hard = false)
 }
 
 private fun part2(): Int {
-    return playGame(hard = true, print = false)
+    return playGame(hard = true)
 }
 
-private fun playGame(hard: Boolean, print: Boolean): Int {
-    val state = GameState()
-    val manaSpent = mutableMapOf(state to GameProgress(0, ""))
-    val queue = mutableSetOf(state)
-    val visited = mutableSetOf<GameState>()
-
-    while (queue.isNotEmpty()) {
-        val current = queue.minByOrNull { manaSpent[it]!!.manaSpent }!!
-        queue -= current
-
-        val (mana, description) = manaSpent[current]!!
-        if (current.isWin()) {
-            if (print) println(description)
-            return mana
-        }
-        visited += current
-
-        current.next(hard, print).forEach { (newState, newMana, newDesc) ->
-            if (newState in visited || newState.isLoss()) return@forEach
-
-            if (newState !in manaSpent || mana + newMana < manaSpent[newState]!!.manaSpent) {
-                manaSpent[newState] = GameProgress(mana + newMana, if (print) description + newDesc else "")
-            }
-
-            queue += newState
+private fun playGame(hard: Boolean) = searchGraph(
+    start = GameState(),
+    isDone = { it.isWin() },
+    nextSteps = { current ->
+        if (current.isLoss()) {
+            emptySet()
+        } else {
+            current.next(hard).map { it.newState to it.manaCost }.toSet()
         }
     }
-
-    return -1
-}
+)
 
 private data class GameState(
     val playerHp: Int = 50,
@@ -61,23 +44,21 @@ private data class GameState(
 )
 
 @OptIn(ExperimentalStdlibApi::class)
-private fun GameState.next(hard: Boolean, print: Boolean): List<GameStep> = buildList {
+private fun GameState.next(hard: Boolean): List<GameStep> = buildList {
     val description = StringBuilder()
-    if (print) {
-        description.append("\n")
-        if (playerTurn) description.append("-- Player turn --\n") else description.append("-- Boss turn --\n")
+    description.append("\n")
+    if (playerTurn) description.append("-- Player turn --\n") else description.append("-- Boss turn --\n")
 
-        description.append("- Player has ")
-            .append(playerHp)
-            .append(" hit points, ")
-            .append(playerArmor)
-            .append(" armor, ")
-            .append(playerMana)
-            .append(" mana\n")
-            .append("- Boss has ")
-            .append(bossHp)
-            .append(" hit points\n")
-    }
+    description.append("- Player has ")
+        .append(playerHp)
+        .append(" hit points, ")
+        .append(playerArmor)
+        .append(" armor, ")
+        .append(playerMana)
+        .append(" mana\n")
+        .append("- Boss has ")
+        .append(bossHp)
+        .append(" hit points\n")
 
     var newShieldTimer = shieldTimer
     var newPoisonTimer = poisonTimer
@@ -89,7 +70,7 @@ private fun GameState.next(hard: Boolean, print: Boolean): List<GameStep> = buil
 
     if (hard && playerTurn) {
         newPlayerHp--
-        if (print) { description.append("Player loses 1 hit point for hard mode.\n") }
+        description.append("Player loses 1 hit point for hard mode.\n")
         if (newPlayerHp <= 0) {
             this += GameStep(
                 newState = copy(
@@ -111,41 +92,33 @@ private fun GameState.next(hard: Boolean, print: Boolean): List<GameStep> = buil
 
     if (newShieldTimer != 0) {
         newShieldTimer--
-        if (print) { description.append("Shield's timer is now ").append(newShieldTimer).append(".\n") }
+        description.append("Shield's timer is now ").append(newShieldTimer).append(".\n")
         if (newShieldTimer == 0) {
             newPlayerArmor = 0
-            if (print) { description.append("Shield wears off, decreasing armor by 7.\n") }
+            description.append("Shield wears off, decreasing armor by 7.\n")
         }
     }
 
     if (newRechargeTimer != 0) {
         newRechargeTimer--
         newMana += 101
-        if (print) {
-            description.append("Recharge provides 101 mana; its timer is now ").append(newRechargeTimer).append(".\n")
-        }
+        description.append("Recharge provides 101 mana; its timer is now ").append(newRechargeTimer).append(".\n")
 
         if (newRechargeTimer == 0) {
-            if (print) {
-                description.append("Recharge wears off.\n")
-            }
+            description.append("Recharge wears off.\n")
         }
     }
 
     if (newPoisonTimer != 0) {
         newPoisonTimer--
         newBossHp -= 3
-        if (print) {
-            if (newBossHp <= 0) {
-                description.append("Poison deals 3 damage. This kills the boss, and the player wins.\n")
-            } else {
-                description.append("Poison deals 3 damage; its timer is now ").append(newPoisonTimer).append(".\n")
-            }
+        if (newBossHp <= 0) {
+            description.append("Poison deals 3 damage. This kills the boss, and the player wins.\n")
+        } else {
+            description.append("Poison deals 3 damage; its timer is now ").append(newPoisonTimer).append(".\n")
         }
 
-        if (print && newPoisonTimer == 0) {
-            description.append("Poison wears off.\n")
-        }
+        description.append("Poison wears off.\n")
     }
 
     if (newBossHp <= 0) {
@@ -168,18 +141,16 @@ private fun GameState.next(hard: Boolean, print: Boolean): List<GameStep> = buil
 
     if (!playerTurn) {
         newPlayerHp -= bossDamage - newPlayerArmor
-        if (print) {
-            if (newPlayerArmor == 0) {
-                description.append("Boss attacks for $bossDamage damage!")
-            } else {
-                description.append("Boss attacks for $bossDamage - $newPlayerArmor = ${bossDamage - newPlayerArmor} damage!")
-            }
+        if (newPlayerArmor == 0) {
+            description.append("Boss attacks for $bossDamage damage!")
+        } else {
+            description.append("Boss attacks for $bossDamage - $newPlayerArmor = ${bossDamage - newPlayerArmor} damage!")
+        }
 
-            if (newPlayerHp == 0) {
-                description.append(" This kills the player they loose.\n")
-            } else {
-                description.append("\n")
-            }
+        if (newPlayerHp == 0) {
+            description.append(" This kills the player they loose.\n")
+        } else {
+            description.append("\n")
         }
         this += GameStep(
             newState = copy(
@@ -198,13 +169,12 @@ private fun GameState.next(hard: Boolean, print: Boolean): List<GameStep> = buil
     } else {
         if (53 <= newMana) {
             // magic missile
-            val newDescription = if (print) {
+            val newDescription =
                 description.toString() + if (newBossHp <= 4) {
                     "Player casts Magic Missile, dealing 4 damage. This kills the boss, and the player wins.\n"
                 } else {
                     "Player casts Magic Missile, dealing 4 damage.\n"
                 }
-            } else ""
 
             this += GameStep(
                 newState = copy(
@@ -223,13 +193,12 @@ private fun GameState.next(hard: Boolean, print: Boolean): List<GameStep> = buil
         }
         if (73 <= newMana) {
             // drain
-            val newDescription = if (print) {
+            val newDescription =
                 description.toString() + if (newBossHp <= 2) {
                     "Player casts Drain, dealing 2 damage, and healing 2 hit points. This kills the boss, and the player wins.\n"
                 } else {
                     "Player casts Drain, dealing 2 damage, and healing 2 hit points.\n"
                 }
-            } else ""
             this += GameStep(
                 newState = copy(
                     playerHp = newPlayerHp + 2,
@@ -259,7 +228,7 @@ private fun GameState.next(hard: Boolean, print: Boolean): List<GameStep> = buil
                     rechargeTimer = newRechargeTimer
                 ),
                 manaCost = 113,
-                description = if (print) { description.toString() + "Player casts Shield, increasing armor by 7.\n" } else ""
+                description = description.toString() + "Player casts Shield, increasing armor by 7.\n"
             )
         }
         if (173 <= newMana && newPoisonTimer == 0) {
@@ -276,7 +245,7 @@ private fun GameState.next(hard: Boolean, print: Boolean): List<GameStep> = buil
                     rechargeTimer = newRechargeTimer
                 ),
                 manaCost = 173,
-                description = if (print) { description.toString() + "Player casts Poison.\n" } else ""
+                description = description.toString() + "Player casts Poison.\n"
             )
         }
         if (229 <= newMana && newRechargeTimer == 0) {
@@ -293,7 +262,7 @@ private fun GameState.next(hard: Boolean, print: Boolean): List<GameStep> = buil
                     rechargeTimer = 5
                 ),
                 manaCost = 229,
-                description = if (print) { description.toString() + "Player casts Recharge.\n" } else ""
+                description = description.toString() + "Player casts Recharge.\n"
             )
         }
     }
@@ -303,4 +272,3 @@ private fun GameState.isLoss() = playerHp <= 0
 private fun GameState.isWin() = bossHp <= 0
 
 private data class GameStep(val newState: GameState, val manaCost: Int, val description: String)
-private data class GameProgress(val manaSpent: Int, val description: String)

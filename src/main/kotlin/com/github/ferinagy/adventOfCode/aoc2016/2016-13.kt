@@ -2,6 +2,7 @@ package com.github.ferinagy.adventOfCode.aoc2016
 
 import com.github.ferinagy.adventOfCode.Coord2D
 import com.github.ferinagy.adventOfCode.searchGraph
+import com.github.ferinagy.adventOfCode.singleStep
 
 fun main() {
     println("Part1:")
@@ -19,7 +20,7 @@ private fun part1(input: Int, target: Coord2D): Int {
     return searchGraph(
         start = start,
         isDone = { it == target },
-        nextSteps = { from -> adjacent(from, input).toSet() },
+        nextSteps = { from -> adjacent(from, input).toSet().singleStep() },
         heuristic = { it.distanceTo(target) }
     )
 }
@@ -38,7 +39,7 @@ private fun part2(): Int {
             val next = adjacent(from, input)
             next.forEach { steps[it] = currentSteps + 1 }
 
-            next.toSet()
+            next.toSet().singleStep()
         }
     )
     return canVisit.size

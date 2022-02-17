@@ -5,7 +5,7 @@ import java.util.*
 fun <T : Any> searchGraph(
     start: T,
     isDone: (T) -> Boolean,
-    nextSteps: (T) -> Set<T>,
+    nextSteps: (T) -> Set<Pair<T, Int>>,
     computePath: Boolean = false,
     heuristic: (T) -> Int = { 0 }
 ): Int {
@@ -26,8 +26,8 @@ fun <T : Any> searchGraph(
             return dist
         }
 
-        for (next in nextSteps(current)) {
-            val nextDist = dist + 1
+        for ((next, stepSize) in nextSteps(current)) {
+            val nextDist = dist + stepSize
 
             if (dists[next] == null) {
                 dists[next] = nextDist
@@ -48,6 +48,8 @@ fun <T : Any> searchGraph(
 
     return -1
 }
+
+fun <T> Set<T>.singleStep() = map { it to 1 }.toSet()
 
 private fun <T> reconstructPath(end: T, cameFrom: Map<T, T>): List<T> = buildList<T> {
     var current: T? = end

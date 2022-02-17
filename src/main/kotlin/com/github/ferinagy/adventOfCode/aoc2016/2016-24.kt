@@ -4,6 +4,7 @@ import com.github.ferinagy.adventOfCode.BooleanGrid
 import com.github.ferinagy.adventOfCode.Coord2D
 import com.github.ferinagy.adventOfCode.get
 import com.github.ferinagy.adventOfCode.searchGraph
+import com.github.ferinagy.adventOfCode.singleStep
 
 fun main() {
     println("Part1:")
@@ -46,7 +47,7 @@ private fun solve(input: String, returnToStart: Boolean): Int {
                 .map {
                     RobotPath(position = it, remaining = current.remaining - it)
                 }
-                .toSet()
+                .toSet().singleStep()
         }
     )
 }

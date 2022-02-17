@@ -1,17 +1,23 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
+    println(part1(testInput1))
     println(part1(input))
 
     println()
     println("Part2:")
+    println(part2(testInput1))
     println(part2(input))
 }
 
 private fun part1(input: String): Int {
+    return solve(input, 0)
+}
+
+private fun solve(input: String, a: Int): Int {
+    var comp = Computer(a = a)
     val instructions = input.lines().map { Instruction.parse(it) }
-    var comp = Computer()
     while (comp.ip in instructions.indices) {
         comp = comp.doInstruction(instructions[comp.ip])
     }
@@ -20,13 +26,7 @@ private fun part1(input: String): Int {
 }
 
 private fun part2(input: String): Int {
-    val instructions = input.lines().map { Instruction.parse(it) }
-    var comp = Computer(a = 1)
-    while (comp.ip in instructions.indices) {
-        comp = comp.doInstruction(instructions[comp.ip])
-    }
-
-    return comp.b
+    return solve(input, 1)
 }
 
 private data class Computer(val a: Int = 0, val b: Int = 0, val ip: Int = 0)

@@ -5,6 +5,7 @@ import com.github.ferinagy.adventOfCode.component1
 import com.github.ferinagy.adventOfCode.component2
 import com.github.ferinagy.adventOfCode.md5toBytes
 import com.github.ferinagy.adventOfCode.searchGraph
+import com.github.ferinagy.adventOfCode.singleStep
 
 fun main() {
     println("Part1:")
@@ -27,7 +28,7 @@ private fun part1(): String {
             if (done) result = path
             done
         },
-        nextSteps = { (position, path) -> openDoors(input, path, position) }
+        nextSteps = { (position, path) -> openDoors(input, path, position).singleStep() }
     )
 
     return result
@@ -44,7 +45,7 @@ private fun part2(input: String): Int {
             false
         },
         nextSteps = { (position, path) ->
-            if (position.isVault()) emptySet() else openDoors(input, path, position)
+            if (position.isVault()) emptySet() else openDoors(input, path, position).singleStep()
         }
     )
 

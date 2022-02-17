@@ -2,6 +2,7 @@ package com.github.ferinagy.adventOfCode.aoc2016
 
 import com.github.ferinagy.adventOfCode.Coord2D
 import com.github.ferinagy.adventOfCode.searchGraph
+import com.github.ferinagy.adventOfCode.singleStep
 import kotlin.math.abs
 
 fun main() {
@@ -58,7 +59,7 @@ private fun part2(input: String): Int {
     return searchGraph(
         start = initial,
         isDone = { it.goal == finish },
-        nextSteps = { it.next() },
+        nextSteps = { it.next().singleStep() },
         heuristic = { it.assumption() }
     )
 }

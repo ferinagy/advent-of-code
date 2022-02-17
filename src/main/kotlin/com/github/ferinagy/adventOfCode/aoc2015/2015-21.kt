@@ -9,30 +9,19 @@ fun main() {
     println(part2())
 }
 
-private fun part1(): Int {
+private fun part1() = solve(true, naturalOrder<Loadout>().reversed())
+
+private fun part2() = solve(false, naturalOrder())
+
+private fun solve(winning: Boolean, comparator: Comparator<Loadout>): Int {
     val boss = Warrior(100, 8, 2)
     val player = Warrior(100, 0, 0)
 
     val results = simulateFights(player, boss)
 
-    val (min, _) = results.filter { it.second }.minByOrNull { (loadout, _) ->
-        loadout.weapon.cost + loadout.armor.cost + loadout.ring1.cost + loadout.ring2.cost
-    }!!
+    val best = results.filter { it.second == winning }.map { it.first }.maxWithOrNull(comparator)!!
 
-    return min.weapon.cost + min.armor.cost + min.ring1.cost + min.ring2.cost
-}
-
-private fun part2(): Int {
-    val boss = Warrior(100, 8, 2)
-    val player = Warrior(100, 0, 0)
-
-    val results = simulateFights(player, boss)
-
-    val (max, _) = results.filter { !it.second }.maxByOrNull { (loadout, _) ->
-        loadout.weapon.cost + loadout.armor.cost + loadout.ring1.cost + loadout.ring2.cost
-    }!!
-
-    return max.weapon.cost + max.armor.cost + max.ring1.cost + max.ring2.cost
+    return best.cost
 }
 
 private fun simulateFights(player: Warrior, boss: Warrior): MutableList<Pair<Loadout, Boolean>> {
@@ -52,7 +41,18 @@ private fun simulateFights(player: Warrior, boss: Warrior): MutableList<Pair<Loa
 
 private data class Warrior(val hp: Int, val damage: Int, val armor: Int)
 private data class Equipment(val name: String, val cost: Int, val damage: Int, val armor: Int)
-private data class Loadout(val weapon: Equipment, val armor: Equipment, val ring1: Equipment, val ring2: Equipment)
+private data class Loadout(
+    val weapon: Equipment,
+    val armor: Equipment,
+    val ring1: Equipment,
+    val ring2: Equipment
+) : Comparable<Loadout> {
+
+    val cost: Int
+        get() = weapon.cost + armor.cost + ring1.cost + ring2.cost
+
+    override fun compareTo(other: Loadout) = cost - other.cost
+}
 
 private fun Warrior.fight(other: Warrior): Boolean {
     var hp1 = hp

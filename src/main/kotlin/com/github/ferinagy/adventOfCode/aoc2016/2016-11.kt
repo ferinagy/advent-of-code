@@ -1,6 +1,7 @@
 package com.github.ferinagy.adventOfCode.aoc2016
 
 import com.github.ferinagy.adventOfCode.searchGraph
+import com.github.ferinagy.adventOfCode.singleStep
 import com.github.ferinagy.adventOfCode.subSets
 import java.util.*
 import kotlin.system.measureTimeMillis
@@ -26,7 +27,7 @@ private fun part1(input: String): Int {
     return searchGraph(
         start = RtgState.parse(input),
         isDone = RtgState::isDone,
-        nextSteps = RtgState::nextSteps,
+        nextSteps = { it.nextSteps().singleStep() },
     )
 }
 
@@ -41,7 +42,7 @@ private fun part2(input: String): Int {
     return searchGraph(
         start = nextInput,
         isDone = RtgState::isDone,
-        nextSteps = RtgState::nextSteps,
+        nextSteps = { it.nextSteps().singleStep() },
     )
 }
 
