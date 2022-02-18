@@ -1,7 +1,7 @@
 package com.github.ferinagy.adventOfCode.aoc2017
 
 fun main() {
-    println("Part1:")
+    println("Part1+2:")
     println(solve(testInput1))
     println(solve(input))
 }
