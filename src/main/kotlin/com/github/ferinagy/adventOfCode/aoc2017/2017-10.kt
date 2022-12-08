@@ -14,53 +14,18 @@ fun main() {
 private fun part1(input: String, size: Int): Int {
     val lengths = input.split(',').map { it.toInt() }
 
-    val hasher = Hasher(size)
+    val hasher = KnotHasher(size)
     lengths.forEach { length ->
-        hasher.knotHash(length)
+        hasher.round(length)
     }
 
     return hasher.array[0] * hasher.array[1]
 }
 
 private fun part2(input: String): String {
-    val lengths = input.map { it.code } + listOf(17, 31, 73, 47, 23)
+    val hasher = KnotHasher(256)
 
-    val hasher = Hasher(256)
-    repeat(64) {
-        lengths.forEach { length ->
-            hasher.knotHash(length)
-        }
-    }
-
-    return hasher.array.toList().windowed(16, 16)
-        .map { window -> window.reduce { acc, i -> acc xor i } }
-        .map { "%02x".format(it) }
-        .joinToString(separator = "")
-}
-
-private class Hasher(size: Int) {
-    val array = IntArray(size) { it }
-
-    private val temp = IntArray(size)
-
-    private var position = 0
-    private var skip = 0
-
-    fun knotHash(length: Int) {
-        val rest = length.coerceAtMost(array.size - position)
-        val overflow = length - rest
-        array.copyInto(temp, destinationOffset = 0, startIndex = position, endIndex = position + rest)
-        array.copyInto(temp, destinationOffset = rest, startIndex = 0, endIndex = overflow)
-
-        temp.reverse(0, length)
-
-        temp.copyInto(array, destinationOffset = position, startIndex = 0, endIndex = rest)
-        temp.copyInto(array, destinationOffset = 0, startIndex = rest, endIndex = length)
-
-        position += length + skip
-        position %= array.size
-        skip++
-    }
+    return hasher.hash(input)
 }
 
 private const val testInput1 = """3,4,1,5"""
