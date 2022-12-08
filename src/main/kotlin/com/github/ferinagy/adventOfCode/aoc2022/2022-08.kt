@@ -2,6 +2,7 @@ package com.github.ferinagy.adventOfCode.aoc2022
 
 import com.github.ferinagy.adventOfCode.Coord2D
 import com.github.ferinagy.adventOfCode.IntGrid
+import com.github.ferinagy.adventOfCode.get
 import com.github.ferinagy.adventOfCode.toIntGrid
 
 fun main() {
@@ -19,42 +20,19 @@ private fun part1(input: String): Int {
     val grid = input.lines().map { line -> line.map { it.digitToInt() } }.toIntGrid()
     val visible = mutableSetOf<Coord2D>()
 
-    for (y in 0 until  grid.height) {
-        var max = -1
-        for (x in 0 until grid.width) {
-            if (max < grid[x, y]) {
-                visible += Coord2D(x, y)
-                max = grid[x, y]
-            }
-        }
-    }
+    fun Coord2D.rotate(times: Int): Coord2D =
+        if (times == 0) this else Coord2D(y, grid.width - 1 - x).rotate(times - 1)
 
-    for (y in 0 until  grid.height) {
-        var max = -1
-        for (x in grid.width - 1 downTo  0) {
-            if (max < grid[x, y]) {
-                visible += Coord2D(x, y)
-                max = grid[x, y]
-            }
-        }
-    }
+    repeat(4) { dir ->
+        for (y in 0 until  grid.height) {
+            var max = -1
+            for (x in 0 until grid.width) {
+                val coord = Coord2D(x, y).rotate(dir)
 
-    for (x in 0 until  grid.width) {
-        var max = -1
-        for (y in 0 until grid.height) {
-            if (max < grid[x, y]) {
-                visible += Coord2D(x, y)
-                max = grid[x, y]
-            }
-        }
-    }
-
-    for (x in 0 until  grid.width) {
-        var max = -1
-        for (y in grid.height - 1 downTo 0) {
-            if (max < grid[x, y]) {
-                visible += Coord2D(x, y)
-                max = grid[x, y]
+                if (max < grid[coord]) {
+                    visible += coord
+                    max = grid[coord]
+                }
             }
         }
     }
@@ -70,39 +48,25 @@ private fun part2(input: String): Int {
 }
 
 private fun scenicScore(grid: IntGrid, x: Int, y: Int): Int {
-    var up = 0
-    if (y != 0) {
-        while (true) {
-            up++
-            if (y - up == 0 || grid[x, y] <= grid[x, y - up]) break
-        }
-    }
+    val current = grid[x, y]
 
-    var down = 0
-    if (y != grid.height - 1) {
-        while (true) {
-            down++
-            if (y + down == grid.height - 1 || grid[x, y] <= grid[x, y + down]) break
-        }
-    }
-
-    var left = 0
-    if (x != 0) {
-        while (true) {
-            left++
-            if (x - left == 0 || grid[x, y] <= grid[x - left, y]) break
-        }
-    }
-
-    var right = 0
-    if (x != grid.width - 1) {
-        while (true) {
-            right++
-            if (x + right == grid.width - 1 || grid[x, y] <= grid[x + right, y]) break
-        }
-    }
+    val up = visibleTrees(current, isAtEdge = { y - it == 0 }, next = { grid[x, y - it] })
+    val down = visibleTrees(current, isAtEdge = { y + it == grid.height - 1 }, next = { grid[x, y + it] })
+    val left = visibleTrees(current, isAtEdge = { x - it == 0 }, next = { grid[x - it, y] })
+    val right = visibleTrees(current, isAtEdge = { x + it == grid.width - 1 }, next = { grid[x + it, y] })
 
     return up * down * left * right
+}
+
+private fun visibleTrees(current: Int, isAtEdge: (Int) -> Boolean, next: (Int) -> Int): Int {
+    var up = 0
+    if (!isAtEdge(up)) {
+        while (true) {
+            up++
+            if (isAtEdge(up) || current <= next(up)) break
+        }
+    }
+    return up
 }
 
 private const val testInput1 = """30373
