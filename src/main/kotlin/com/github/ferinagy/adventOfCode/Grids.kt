@@ -134,6 +134,11 @@ fun List<String>.toCharGrid(): CharGrid {
     return CharGrid(width, size) { x, y -> get(y)[x] }
 }
 
+fun List<List<Boolean>>.toBooleanGrid(): BooleanGrid {
+    val width = first().size
+    return BooleanGrid(width, size) { x, y -> get(y)[x] }
+}
+
 fun List<List<Int>>.toIntGrid(): IntGrid {
     val width = first().size
     return IntGrid(width, size) { x, y -> get(y)[x] }
