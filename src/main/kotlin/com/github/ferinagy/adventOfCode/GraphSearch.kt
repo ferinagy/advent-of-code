@@ -29,16 +29,9 @@ fun <T : Any> searchGraph(
         for ((next, stepSize) in nextSteps(current)) {
             val nextDist = dist + stepSize
 
-            if (dists[next] == null) {
+            if (dists[next] == null || nextDist < dists[next]!!) {
                 dists[next] = nextDist
 
-                queue += next
-
-                if (computePath) paths[next] = current
-            } else if (nextDist < dists[next]!!) {
-                dists[next] = nextDist
-
-                queue -= next
                 queue += next
 
                 if (computePath) paths[next] = current
