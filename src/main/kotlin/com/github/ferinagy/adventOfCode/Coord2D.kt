@@ -27,6 +27,8 @@ data class Coord2D(val x: Int, val y: Int) {
 
     operator fun plus(other: Coord2D) = copy(x = x + other.x, y = y + other.y)
 
+    operator fun minus(other: Coord2D) = copy(x = x - other.x, y = y - other.y)
+
     fun distanceTo(other: Coord2D) = abs(x - other.x) + abs(y - other.y)
 }
 
