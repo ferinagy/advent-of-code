@@ -120,8 +120,6 @@ private fun Coord2D.wrapIn(grid: CharGrid) =
 private fun Coord2D.rotate(times: Int, size: Int): Coord2D =
     if (times == 0) this else Coord2D(x = size - 1 - y, y = x).rotate(times - 1, size)
 
-private operator fun Coord2D.times(n: Int) = Coord2D(x * n, y * n)
-
 private const val testInput1 = """        ...#
         .#..
         #...
