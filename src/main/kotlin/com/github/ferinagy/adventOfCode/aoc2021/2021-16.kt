@@ -1,6 +1,6 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1(testInput1))
     println(part1(testInput2))
@@ -23,7 +23,6 @@ private fun part2(input: String): Long {
     return parser.parse().calculate()
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 private class PacketParser(input: String) {
 
     private val binaryRep = input

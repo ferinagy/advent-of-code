@@ -1,6 +1,6 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1(testInput1))
     println(part1(input))
@@ -76,7 +76,6 @@ private fun Burrow.isOrganized(): Boolean {
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun Burrow.possibleMoves(): List<Pair<Burrow, Int>> = buildList {
     val inHallway = hallway.mapIndexedNotNull { index, c ->
         if (c != '.') c to index else null

@@ -1,3 +1,5 @@
+package com.github.ferinagy.adventOfCode.aoc2015
+
 import com.github.ferinagy.adventOfCode.md5toBytes
 import com.github.ferinagy.adventOfCode.startsWithZeros
 

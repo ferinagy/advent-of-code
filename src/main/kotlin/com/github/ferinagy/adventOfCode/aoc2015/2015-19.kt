@@ -20,7 +20,6 @@ private fun part1(input: String): Int {
     return replacements.size
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun part2(input: String): Int {
     val (rules, target) = parse(input)
 

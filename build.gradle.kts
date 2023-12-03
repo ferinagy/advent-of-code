@@ -1,33 +1,11 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.9.21"
     application
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 group = "me.nagy"
 version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-}
-
-application {
-    mainClass.set("MainKt")
-}

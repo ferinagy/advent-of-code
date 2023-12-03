@@ -36,7 +36,6 @@ private fun solve(input: String, groupCount: Int): Long {
 
 private fun List<Long>.product(): Long = reduce { acc, l -> acc * l }
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun List<Long>.groupsWithSum(target: Long): Sequence<List<Long>> = sequence {
     val queue = LinkedList<Pair<List<Long>, List<Long>>>()
     queue.addLast(emptyList<Long>() to this@groupsWithSum)

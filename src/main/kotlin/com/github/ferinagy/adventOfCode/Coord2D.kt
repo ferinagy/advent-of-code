@@ -13,7 +13,6 @@ data class Coord2D(val x: Int, val y: Int) {
     val manhattanDist: Int
         get() = abs(x) + abs(y)
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun adjacent(includeDiagonals: Boolean): List<Coord2D> = buildList {
         setOf(-1 to 0, 0 to -1, 1 to 0, 0 to 1).forEach {
             this += copy(x = x + it.first, y = y + it.second)
@@ -33,6 +32,10 @@ data class Coord2D(val x: Int, val y: Int) {
 
     fun distanceTo(other: Coord2D) = abs(x - other.x) + abs(y - other.y)
 }
+
+fun Coord2D.rotateCw() = Coord2D(y, -x)
+
+fun Coord2D.rotateCcw() = Coord2D(-y, x)
 
 fun List<Coord2D>.filterIn(xRange: IntRange, yRange: IntRange) = filter { it.x in xRange && it.y in yRange }
 

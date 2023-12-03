@@ -4,7 +4,7 @@ import com.github.ferinagy.adventOfCode.Coord2D
 import kotlin.math.abs
 import kotlin.math.max
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1(input))
 
@@ -43,7 +43,6 @@ private fun parse(input: String): List<Pair<Coord2D, Coord2D>> = input.lines()
         it.split(" -> ").let { (c1, c2) -> Coord2D.parse(c1) to Coord2D.parse(c2) }
     }
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun range(start: Coord2D, end: Coord2D): List<Coord2D> = buildList {
     val dx = end.x - start.x
     val dy = end.y - start.y

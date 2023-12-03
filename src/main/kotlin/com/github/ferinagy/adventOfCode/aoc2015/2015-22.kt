@@ -43,7 +43,6 @@ private data class GameState(
     val rechargeTimer: Int = 0
 )
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun GameState.next(hard: Boolean): List<GameStep> = buildList {
     val description = StringBuilder()
     description.append("\n")

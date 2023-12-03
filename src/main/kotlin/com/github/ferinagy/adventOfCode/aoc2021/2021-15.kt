@@ -3,7 +3,7 @@ package com.github.ferinagy.adventOfCode.aoc2021
 import com.github.ferinagy.adventOfCode.Coord2D
 import java.util.*
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1(testInput1))
     println(part1(input))

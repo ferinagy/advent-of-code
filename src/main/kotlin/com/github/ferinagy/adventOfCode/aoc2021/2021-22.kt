@@ -4,7 +4,7 @@ import com.github.ferinagy.adventOfCode.Coord3D
 import kotlin.math.max
 import kotlin.math.min
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1(testInput1))
     println(part1(testInput2))

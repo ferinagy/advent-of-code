@@ -18,7 +18,6 @@ private fun part2(): Long {
     return input.decompress(true)
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun String.decompress(recursive: Boolean = false): Long {
     val regex = """\((\d+)x(\d+)\)""".toRegex()
     var pos = 0

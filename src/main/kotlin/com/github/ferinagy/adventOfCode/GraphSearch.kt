@@ -7,7 +7,8 @@ fun <T : Any> searchGraph(
     isDone: (T) -> Boolean,
     nextSteps: (T) -> Set<Pair<T, Int>>,
     computePath: Boolean = false,
-    heuristic: (T) -> Int = { 0 }
+    heuristic: (T) -> Int = { 0 },
+    allowDuplicatesInQueue: Boolean = true
 ): Int {
     val dists = mutableMapOf(start to 0)
     val queue = PriorityQueue(compareBy<T> { dists[it]!! + heuristic(it) })
@@ -32,6 +33,13 @@ fun <T : Any> searchGraph(
             if (dists[next] == null || nextDist < dists[next]!!) {
                 dists[next] = nextDist
 
+                queue += next
+
+                if (computePath) paths[next] = current
+            } else if (nextDist < dists[next]!!) {
+                dists[next] = nextDist
+
+                if (!allowDuplicatesInQueue) queue -= next
                 queue += next
 
                 if (computePath) paths[next] = current

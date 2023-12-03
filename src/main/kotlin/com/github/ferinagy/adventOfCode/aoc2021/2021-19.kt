@@ -18,7 +18,6 @@ fun main() {
     println(real2)
 }
 
-@OptIn(ExperimentalTime::class)
 private fun solve(input: String): Pair<Int, Int> {
     val rawScanners = parse(input)
     val scanners = rawScanners.map { (name, allBeacons) ->
@@ -121,7 +120,6 @@ private data class PlacedBeacon(val position: Coord3D, val relativePositions: Se
 
 fun Coord3D.relativePosition(other: Coord3D) = Coord3D(other.x - x, other.y - y, other.z - z)
 
-@OptIn(ExperimentalStdlibApi::class)
 fun Coord3D.possiblePositions(): List<Coord3D> {
     val original = this
     return listOf(

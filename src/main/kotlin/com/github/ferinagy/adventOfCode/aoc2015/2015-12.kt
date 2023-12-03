@@ -54,7 +54,6 @@ private sealed class Json {
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun parseJson(input: String, from: Int = 0): Pair<Json, Int> {
     val numRegex = """-?\d+""".toRegex()
     var position = from

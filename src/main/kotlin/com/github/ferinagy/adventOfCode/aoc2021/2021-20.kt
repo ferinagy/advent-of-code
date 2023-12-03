@@ -5,7 +5,7 @@ import com.github.ferinagy.adventOfCode.toBooleanGrid
 
 private typealias Image = BooleanGrid
 
-fun main(args: Array<String>) {
+fun main() {
     println("Part1:")
     println(part1(testInput1))
     println(part1(testInput2))

@@ -1,4 +1,6 @@
-fun main(args: Array<String>) {
+package com.github.ferinagy.adventOfCode.aoc2021
+
+fun main() {
     println("Part1:")
     println(part1(input))
 
