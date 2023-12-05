@@ -1,7 +1,5 @@
 package com.github.ferinagy.adventOfCode.aoc2023
 
-import kotlin.time.measureTime
-
 fun main() {
     println("Part1:")
     println(part1(testInput1))
@@ -10,11 +8,7 @@ fun main() {
     println()
     println("Part2:")
     println(part2(testInput1))
-    measureTime {
-        println(part2(input))
-    }.also {
-        println("took: $it")
-    }
+    println(part2(input))
 }
 
 private fun part1(input: String): Long {
@@ -24,9 +18,7 @@ private fun part1(input: String): Long {
     val maps = blocks.drop(1).map { it.parseMapping() }
 
     val locations = seeds.map { seed ->
-        maps.fold(seed) { acc: Long, mappings: List<Mapping> ->
-            mappings.transform(acc)
-        }
+        maps.fold(seed) { acc: Long, mappings: List<Mapping> -> mappings.transform(acc) }
     }
 
     return locations.min()
@@ -42,20 +34,14 @@ private fun part2(input: String): Long {
     }
     val maps = blocks.drop(1).map { it.parseMapping() }
 
-    println(seedsRanges)
-    println(seedsRanges.size)
+    val reverseMap = maps.reversed()
+    var locationCandidate = 0L
+    while (true) {
+        val seedCandidate = reverseMap.fold(locationCandidate) { acc: Long, mappings: List<Mapping> -> mappings.reverse(acc) }
+        if (seedsRanges.any { seedCandidate in it }) return locationCandidate
 
-
-    val locations = seedsRanges.mapIndexed { i, range ->
-        println("index $i, ${range.last - range.first + 1}")
-        range.minOf { seed ->
-            maps.fold(seed) { acc: Long, mappings: List<Mapping> ->
-                mappings.transform(acc)
-            }
-        }
+        locationCandidate++
     }
-
-    return locations.min()
 }
 
 private fun String.parseMapping(): List<Mapping> {
@@ -69,6 +55,12 @@ private fun List<Mapping>.transform(input: Long): Long {
     val found = this.find { input in it.source ..< it.source + it.length } ?: return input
 
     return found.destination + input - found.source
+}
+
+private fun List<Mapping>.reverse(input: Long): Long {
+    val found = this.find { input in it.destination ..< it.destination + it.length } ?: return input
+
+    return found.source + input - found.destination
 }
 
 private data class Mapping(val destination: Long, val source: Long, val length: Long)
