@@ -1,24 +1,23 @@
 package com.github.ferinagy.adventOfCode
 
 fun main() {
+    val input = readInputLines(2023, "01-input")
+    val test1 = readInputLines(2023, "01-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
-private fun part1(input: String): Int {
+private fun part1(input: List<String>): Int {
     return 0
 }
 
-private fun part2(input: String): Int {
+private fun part2(input: List<String>): Int {
     return 0
 }
-
-private const val testInput1 = """"""
-
-private const val input = """"""
