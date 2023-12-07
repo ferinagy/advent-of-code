@@ -87,7 +87,7 @@ private data class HandWithJoker(val cards: String, val bid: Int): Comparable<Ha
             counts[0].value == 3 && counts[1].value == 2 -> HandType.FullHouse
             counts[0].value == 2 && counts[1].value == 2 && jokers == 1 -> HandType.FullHouse
             counts[0].value + jokers == 3 -> HandType.Three
-            counts[0].value == 2 && counts[1].value == 2 || counts[0].value == 2 && jokers == 1 -> HandType.TwoPair
+            counts[0].value == 2 && counts[1].value == 2 -> HandType.TwoPair
             counts[0].value + jokers == 2 -> HandType.Pair
             else -> HandType.HighCard
         }
