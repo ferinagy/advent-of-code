@@ -1,6 +1,7 @@
 package com.github.ferinagy.adventOfCode.aoc2022
 
 import com.github.ferinagy.adventOfCode.Coord2D
+import com.github.ferinagy.adventOfCode.lcm
 import com.github.ferinagy.adventOfCode.searchGraph
 import com.github.ferinagy.adventOfCode.singleStep
 
@@ -77,15 +78,6 @@ private class BlizzardBasin(input: String) {
         val c = position + (direction * time)
         return Coord2D(x = ((c.x - 1).mod(width - 2)) + 1, y = ((c.y - 1).mod(height - 2)) + 1)
     }
-}
-
-private fun gcd(a: Int, b: Int): Int {
-    if (b == 0) return a
-    return gcd(b, a % b)
-}
-
-private fun lcm(a: Int, b: Int): Int {
-    return a / gcd(a, b) * b
 }
 
 private const val testInput1 = """#.######

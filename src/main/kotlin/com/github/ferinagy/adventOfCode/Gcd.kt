@@ -1,18 +1,30 @@
 package com.github.ferinagy.adventOfCode
 
-private fun extendedGcd(a: Int, b: Int): Int {
+fun extendedEuclidean(a: Long, b: Long): Triple<Long, Long, Long> {
     var r = a to b
-    var s = 1 to 0
-    var t = 0 to 1
+    var s = 1L to 0L
+    var t = 0L to 1L
 
-    while (r.second != 0) {
+    while (r.second != 0L) {
         val q = r.first / r.second
         r = r.second to r.first - q * r.second
         s = s.second to s.first - q * s.second
         t = t.second to t.first - q * t.second
     }
 
-    println("Bézout coefficients: ${s.first}, ${t.first}")
-    println("quotients by the gcd: ${s.second}, ${t.second}")
-    return r.first
+    return Triple(r.first, s.first, t.first)
+}
+
+fun gcd(a: Long, b: Long): Long {
+    return extendedEuclidean(a, b).first
+}
+
+fun gcd(a: Int, b: Int): Int = gcd(a.toLong(), b.toLong()).toInt()
+
+
+fun lcm(a: Long, b: Long): Long {
+    return a / gcd(a, b) * b
+}
+fun lcm(a: Int, b: Int): Int {
+    return a / gcd(a, b) * b
 }

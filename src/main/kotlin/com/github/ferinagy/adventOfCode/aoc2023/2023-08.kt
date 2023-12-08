@@ -1,5 +1,6 @@
 package com.github.ferinagy.adventOfCode.aoc2023
 
+import com.github.ferinagy.adventOfCode.gcd
 import com.github.ferinagy.adventOfCode.println
 import com.github.ferinagy.adventOfCode.readInputLines
 
@@ -86,11 +87,6 @@ private fun followMap(
     }
 
     return result to current
-}
-
-private fun gcd(a: Long, b: Long): Long {
-    if (b == 0L) return a
-    return gcd(b, a % b)
 }
 
 private val regex = """(...) = \((...), (...)\)""".toRegex()
