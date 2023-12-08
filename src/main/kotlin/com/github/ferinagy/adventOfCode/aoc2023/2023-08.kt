@@ -1,6 +1,6 @@
 package com.github.ferinagy.adventOfCode.aoc2023
 
-import com.github.ferinagy.adventOfCode.gcd
+import com.github.ferinagy.adventOfCode.lcm
 import com.github.ferinagy.adventOfCode.println
 import com.github.ferinagy.adventOfCode.readInputLines
 
@@ -63,7 +63,7 @@ private fun part2(input: List<String>): Long {
         result.first
     }
 
-    return ends.map { it.toLong() }.reduce { acc, i -> (acc / gcd(acc, i)) * i }
+    return ends.map { it.toLong() }.reduce { acc, i -> lcm(acc, i) }
 }
 
 private fun followMap(
