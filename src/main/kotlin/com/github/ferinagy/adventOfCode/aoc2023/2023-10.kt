@@ -39,24 +39,18 @@ private fun part2(input: List<String>): Int {
     val loop = getLoop(grid)
     grid.replaceStart()
     return grid.yRange.sumOf { y ->
-        var result = 0
-        var x = 0
         var inside = false
-        while (x <= grid.xRange.last) {
+        grid.xRange.count { x ->
             val pos = Coord2D(x, y)
-            if (inside && pos !in loop) result++
-
-            if (pos in loop) {
-                if (grid[pos] == '|') inside = !inside
-
-                if (grid[pos] in "FL") {
-                    do { x++ } while (grid[x, y] !in "7J")
-                    if (grid[pos] == 'F' && grid[x, y] == 'J' || grid[pos] == 'L' && grid[x, y] == '7') inside = !inside
+            when {
+                pos !in loop && inside -> true
+                pos in loop && grid[pos] in "|F7'" -> {
+                    inside = !inside
+                    false
                 }
+                else -> false
             }
-            x++
         }
-        result
     }
 }
 
