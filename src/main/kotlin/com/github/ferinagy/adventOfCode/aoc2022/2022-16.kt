@@ -1,20 +1,25 @@
 package com.github.ferinagy.adventOfCode.aoc2022
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
 import com.github.ferinagy.adventOfCode.searchGraph
 import kotlin.math.min
 
 fun main() {
+    val input = readInputLines(2022, "16-input")
+    val testInput1 = readInputLines(2022, "16-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(testInput1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(testInput1).println()
+    part2(input).println()
 }
 
-private fun part1(input: String): Int {
+private fun part1(input: List<String>): Int {
     val caves = VolcanicCaves(input)
     val totalTime = 30
 
@@ -22,17 +27,17 @@ private fun part1(input: String): Int {
     return caves.maxPossible(totalTime) - caves.dfs(totalTime, "AA", bits)
 }
 
-private fun part2(input: String): Int {
+private fun part2(input: List<String>): Int {
     val caves = VolcanicCaves(input)
     val totalTime = 26
 
     val bits = (1 shl caves.openable.size) - 1
     return caves.maxPossible(totalTime) - caves.aStar(totalTime, "AA", bits)
 }
-private class VolcanicCaves(input: String) {
+private class VolcanicCaves(input: List<String>) {
 
     val regex = """Valve (\w+) has flow rate=(\d+); tunnels? leads? to valves? ((\w+)(, (\w+))*)""".toRegex()
-    val valves = input.lines().map {
+    val valves = input.map {
         val (from, rate, into) = regex.matchEntire(it)!!.destructured
         Valve(from, rate.toInt(), into.split(", ").toSet())
     }
@@ -165,65 +170,3 @@ private operator fun Int.contains(index: Int): Boolean {
 }
 
 private data class Valve(val name: String, val rate: Int, val connections: Set<String>)
-
-private const val testInput1 = """Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
-Valve BB has flow rate=13; tunnels lead to valves CC, AA
-Valve CC has flow rate=2; tunnels lead to valves DD, BB
-Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
-Valve EE has flow rate=3; tunnels lead to valves FF, DD
-Valve FF has flow rate=0; tunnels lead to valves EE, GG
-Valve GG has flow rate=0; tunnels lead to valves FF, HH
-Valve HH has flow rate=22; tunnel leads to valve GG
-Valve II has flow rate=0; tunnels lead to valves AA, JJ
-Valve JJ has flow rate=21; tunnel leads to valve II"""
-
-private const val input = """Valve QJ has flow rate=11; tunnels lead to valves HB, GL
-Valve VZ has flow rate=10; tunnel leads to valve NE
-Valve TX has flow rate=19; tunnels lead to valves MG, OQ, HM
-Valve ZI has flow rate=5; tunnels lead to valves BY, ON, RU, LF, JR
-Valve IH has flow rate=0; tunnels lead to valves YB, QS
-Valve QS has flow rate=22; tunnel leads to valve IH
-Valve QB has flow rate=0; tunnels lead to valves QX, ES
-Valve NX has flow rate=0; tunnels lead to valves UH, OP
-Valve PJ has flow rate=0; tunnels lead to valves OC, UH
-Valve OR has flow rate=6; tunnels lead to valves QH, BH, HB, JD
-Valve OC has flow rate=7; tunnels lead to valves IZ, JR, TA, ZH, PJ
-Valve UC has flow rate=0; tunnels lead to valves AA, BY
-Valve QX has flow rate=0; tunnels lead to valves AA, QB
-Valve IZ has flow rate=0; tunnels lead to valves OC, SX
-Valve AG has flow rate=13; tunnels lead to valves NW, GL, SM
-Valve ON has flow rate=0; tunnels lead to valves MO, ZI
-Valve XT has flow rate=18; tunnels lead to valves QZ, PG
-Valve AX has flow rate=0; tunnels lead to valves UH, MO
-Valve JD has flow rate=0; tunnels lead to valves OR, SM
-Valve HM has flow rate=0; tunnels lead to valves TX, QH
-Valve LF has flow rate=0; tunnels lead to valves ZI, UH
-Valve QH has flow rate=0; tunnels lead to valves OR, HM
-Valve RT has flow rate=21; tunnel leads to valve PG
-Valve NE has flow rate=0; tunnels lead to valves VZ, TA
-Valve OQ has flow rate=0; tunnels lead to valves TX, GE
-Valve AA has flow rate=0; tunnels lead to valves QZ, UC, OP, QX, EH
-Valve UH has flow rate=17; tunnels lead to valves PJ, NX, AX, LF
-Valve GE has flow rate=0; tunnels lead to valves YB, OQ
-Valve EH has flow rate=0; tunnels lead to valves AA, MO
-Valve MG has flow rate=0; tunnels lead to valves TX, NW
-Valve YB has flow rate=20; tunnels lead to valves IH, GE, XG
-Valve MO has flow rate=15; tunnels lead to valves EH, ON, AX, ZH, CB
-Valve JR has flow rate=0; tunnels lead to valves ZI, OC
-Valve GL has flow rate=0; tunnels lead to valves AG, QJ
-Valve SM has flow rate=0; tunnels lead to valves JD, AG
-Valve HB has flow rate=0; tunnels lead to valves OR, QJ
-Valve TA has flow rate=0; tunnels lead to valves OC, NE
-Valve PG has flow rate=0; tunnels lead to valves RT, XT
-Valve XG has flow rate=0; tunnels lead to valves CB, YB
-Valve ES has flow rate=9; tunnels lead to valves QB, FL
-Valve BH has flow rate=0; tunnels lead to valves RU, OR
-Valve FL has flow rate=0; tunnels lead to valves SX, ES
-Valve CB has flow rate=0; tunnels lead to valves MO, XG
-Valve QZ has flow rate=0; tunnels lead to valves AA, XT
-Valve BY has flow rate=0; tunnels lead to valves UC, ZI
-Valve ZH has flow rate=0; tunnels lead to valves MO, OC
-Valve OP has flow rate=0; tunnels lead to valves NX, AA
-Valve NW has flow rate=0; tunnels lead to valves MG, AG
-Valve RU has flow rate=0; tunnels lead to valves ZI, BH
-Valve SX has flow rate=16; tunnels lead to valves IZ, FL"""

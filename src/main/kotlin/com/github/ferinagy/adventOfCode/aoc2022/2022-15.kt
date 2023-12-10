@@ -1,24 +1,29 @@
 package com.github.ferinagy.adventOfCode.aoc2022
 
 import com.github.ferinagy.adventOfCode.Coord2D
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
 fun main() {
+    val input = readInputLines(2022, "15-input")
+    val testInput1 = readInputLines(2022, "15-test1")
+
     println("Part1:")
-    println(part1(testInput1, 10))
-    println(part1(input, 2000000))
+    part1(testInput1, 10).println()
+    part1(input, 2000000).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1, 20))
-    println(part2(input, 4000000))
+    part2(testInput1, 20).println()
+    part2(input, 2000000).println()
 }
 
-private fun part1(input: String, testY: Int): Int {
+private fun part1(input: List<String>, testY: Int): Int {
     val regex = """Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)""".toRegex()
 
-    val parsed = input.lines().map {
+    val parsed = input.map {
         val (x1, y1, x2, y2) = regex.matchEntire(it)!!.destructured
 
         Coord2D(x1.toInt(), y1.toInt()) to Coord2D(x2.toInt(), y2.toInt())
@@ -29,10 +34,10 @@ private fun part1(input: String, testY: Int): Int {
     return full
 }
 
-private fun part2(input: String, size: Int): Long {
+private fun part2(input: List<String>, size: Int): Long {
     val regex = """Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)""".toRegex()
 
-    val parsed = input.lines().map {
+    val parsed = input.map {
         val (x1, y1, x2, y2) = regex.matchEntire(it)!!.destructured
 
         Coord2D(x1.toInt(), y1.toInt()) to Coord2D(x2.toInt(), y2.toInt())
