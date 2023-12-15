@@ -1,23 +1,29 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
+
 fun main() {
+    val input = readInputLines(2015, "23-input")
+    val test1 = readInputLines(2015, "23-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
-private fun part1(input: String): Int {
+private fun part1(input: List<String>): Int {
     return solve(input, 0)
 }
 
-private fun solve(input: String, a: Int): Int {
+private fun solve(input: List<String>, a: Int): Int {
     var comp = Computer(a = a)
-    val instructions = input.lines().map { Instruction.parse(it) }
+    val instructions = input.map { Instruction.parse(it) }
     while (comp.ip in instructions.indices) {
         comp = comp.doInstruction(instructions[comp.ip])
     }
@@ -25,7 +31,7 @@ private fun solve(input: String, a: Int): Int {
     return comp.b
 }
 
-private fun part2(input: String): Int {
+private fun part2(input: List<String>): Int {
     return solve(input, 1)
 }
 
@@ -98,56 +104,3 @@ private sealed class Instruction {
         }
     }
 }
-
-private const val testInput1 = """inc a
-jio a, +2
-tpl a
-inc a"""
-
-private const val input = """jio a, +18
-inc a
-tpl a
-inc a
-tpl a
-tpl a
-tpl a
-inc a
-tpl a
-inc a
-tpl a
-inc a
-inc a
-tpl a
-tpl a
-tpl a
-inc a
-jmp +22
-tpl a
-inc a
-tpl a
-inc a
-inc a
-tpl a
-inc a
-tpl a
-inc a
-inc a
-tpl a
-tpl a
-inc a
-inc a
-tpl a
-inc a
-inc a
-tpl a
-inc a
-inc a
-tpl a
-jio a, +8
-inc b
-jie a, +4
-tpl a
-inc a
-jmp +2
-hlf a
-jmp -7"""

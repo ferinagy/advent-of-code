@@ -1,18 +1,24 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
+
 fun main() {
+    val input = readInputLines(2015, "15-input")
+    val test1 = readInputLines(2015, "15-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
-private fun part1(input: String): Long {
-    val ingredients = input.lines().map { Ingredient.parse(it) }
+private fun part1(input: List<String>): Long {
+    val ingredients = input.map { Ingredient.parse(it) }
     val total = 100
 
     val combinations = combinations(ingredients.size, total)
@@ -28,8 +34,8 @@ private fun part1(input: String): Long {
     }
 }
 
-private fun part2(input: String): Long {
-    val ingredients = input.lines().map { Ingredient.parse(it) }
+private fun part2(input: List<String>): Long {
+    val ingredients = input.map { Ingredient.parse(it) }
     val total = 100
     val targetCalories = 500
 
@@ -81,11 +87,3 @@ private data class Ingredient(
 
 private val regex =
     """(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)""".toRegex()
-
-private const val testInput1 = """Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
-Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"""
-
-private const val input = """Frosting: capacity 4, durability -2, flavor 0, texture 0, calories 5
-Candy: capacity 0, durability 5, flavor -1, texture 0, calories 8
-Butterscotch: capacity -1, durability 0, flavor 5, texture 0, calories 6
-Sugar: capacity 0, durability 0, flavor -2, texture 2, calories 1"""

@@ -1,25 +1,31 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
+
 fun main() {
+    val input = readInputLines(2015, "17-input")
+    val test1 = readInputLines(2015, "17-test1")
+
     println("Part1:")
-    println(part1(testInput1, 25))
-    println(part1(input, 150))
+    part1(test1, 25).println()
+    part1(input, 150).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1, 25))
-    println(part2(input, 150))
+    part2(test1, 25).println()
+    part2(input, 150).println()
 }
 
-private fun part1(input: String, total: Int): Int {
-    val list = input.lines().map { it.toInt() }
+private fun part1(input: List<String>, total: Int): Int {
+    val list = input.map { it.toInt() }
     val combinations = combinations(Combo(list, emptyList(), 0))
 
     return combinations.filter { it.sum == total }.size
 }
 
-private fun part2(input: String, total: Int): Int {
-    val list = input.lines().map { it.toInt() }
+private fun part2(input: List<String>, total: Int): Int {
+    val list = input.map { it.toInt() }
     val combinations = combinations(Combo(list, emptyList(), 0)).filter { it.sum == total }
     val min = combinations.minOf { it.usedContainers.size }
 
@@ -40,30 +46,3 @@ private fun combinations(partial: Combo): List<Combo> {
 }
 
 private data class Combo(val availableContainers: List<Int>, val usedContainers: List<Int>, val sum: Int)
-
-private const val testInput1 = """20
-15
-10
-5
-5"""
-
-private const val input = """43
-3
-4
-10
-21
-44
-4
-6
-47
-41
-34
-17
-17
-44
-36
-31
-46
-9
-27
-38"""

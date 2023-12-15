@@ -1,28 +1,33 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
 import java.util.*
 
 fun main() {
+    val input = readInputLines(2015, "24-input")
+    val test1 = readInputLines(2015, "24-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
-private fun part1(input: String): Long {
+private fun part1(input: List<String>): Long {
     return solve(input, 3)
 }
 
-private fun part2(input: String): Long {
+private fun part2(input: List<String>): Long {
     return solve(input, 4)
 }
 
-private fun solve(input: String, groupCount: Int): Long {
-    val packages = input.lines().map { it.toLong() }.sortedDescending()
+private fun solve(input: List<String>, groupCount: Int): Long {
+    val packages = input.map { it.toLong() }.sortedDescending()
     val sum = packages.sum()
     require(sum % groupCount == 0L)
     val target = sum / groupCount
@@ -62,45 +67,3 @@ private fun List<Long>.isValid(all: List<Long>, target: Long): Boolean {
     val rest = all - this.toSet()
     return rest.groupsWithSum(target).any()
 }
-
-private val testInput1 = """1
-    |2
-    |3
-    |4
-    |5
-    |7
-    |8
-    |9
-    |10
-    |11
-""".trimMargin()
-
-private const val input = """1
-2
-3
-5
-7
-13
-17
-19
-23
-29
-31
-37
-41
-43
-53
-59
-61
-67
-71
-73
-79
-83
-89
-97
-101
-103
-107
-109
-113"""

@@ -1,9 +1,14 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputText
+
 fun main() {
+    val (row, col) = readInputText(2015, "25-input").let(regex::matchEntire)!!.destructured
+
     println("Final:")
-    println(part1(3, 4))
-    println(part1(2978, 3083))
+    part1(3, 4).println()
+    part1(row.toInt(), col.toInt()).println()
 }
 
 private fun part1(row: Int, col: Int): Long {
@@ -22,3 +27,5 @@ private fun calculateCode(n: Int): Long {
 
     return result
 }
+
+private val regex = """To continue, please consult the code grid in the manual.  Enter the code at row (\d+), column (\d+).""".toRegex()

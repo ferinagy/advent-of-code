@@ -1,14 +1,20 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputText
+
 fun main() {
+    val input = readInputText(2015, "10-input")
+    val test1 = readInputText(2015, "10-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
 private fun part1(input: String): Int {
@@ -44,7 +50,3 @@ private fun lookAndSay(input: String): String {
         }
     }
 }
-
-private const val testInput1 = """111221"""
-
-private const val input = """1113222113"""

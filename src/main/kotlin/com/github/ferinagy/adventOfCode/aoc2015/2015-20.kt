@@ -1,14 +1,20 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputText
+
 fun main() {
+    val input = readInputText(2015, "20-input").toInt()
+    val test1 = readInputText(2015, "20-test1").toInt()
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
 private fun part1(input: Int): Int {
@@ -36,7 +42,3 @@ private fun part2(input: Int): Int {
 
     return index + 1
 }
-
-private const val testInput1 = 100
-
-private const val input = 33100000

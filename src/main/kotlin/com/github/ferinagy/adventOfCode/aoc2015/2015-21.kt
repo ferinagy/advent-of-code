@@ -1,20 +1,27 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputText
+
 fun main() {
+    val input = readInputText(2015, "21-input")
+
     println("Part1:")
-    println(part1())
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2())
+    part2(input).println()
 }
 
-private fun part1() = solve(true, naturalOrder<Loadout>().reversed())
+private fun part1(input: String) = solve(input, true, naturalOrder<Loadout>().reversed())
 
-private fun part2() = solve(false, naturalOrder())
+private fun part2(input: String) = solve(input, false, naturalOrder())
 
-private fun solve(winning: Boolean, comparator: Comparator<Loadout>): Int {
-    val boss = Warrior(100, 8, 2)
+private fun solve(input: String, winning: Boolean, comparator: Comparator<Loadout>): Int {
+    val (hp, dmg, arm) = input.lines().map { it.split(": ") }.map { it[1].toInt() }
+
+    val boss = Warrior(hp, dmg, arm)
     val player = Warrior(100, 0, 0)
 
     val results = simulateFights(player, boss)

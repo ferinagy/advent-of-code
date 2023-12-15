@@ -1,43 +1,50 @@
 package com.github.ferinagy.adventOfCode.aoc2015
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
 import com.github.ferinagy.adventOfCode.searchGraph
 
 fun main() {
+    val input = readInputLines(2015, "22-input")
+
     println("Part1:")
-    println(part1())
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2())
+    part2(input).println()
 }
 
-private fun part1(): Int {
-    return playGame(hard = false)
+private fun part1(input: List<String>): Int {
+    return playGame(input, hard = false)
 }
 
-private fun part2(): Int {
-    return playGame(hard = true)
+private fun part2(input: List<String>): Int {
+    return playGame(input, hard = true)
 }
 
-private fun playGame(hard: Boolean) = searchGraph(
-    start = GameState(),
-    isDone = { it.isWin() },
-    nextSteps = { current ->
-        if (current.isLoss()) {
-            emptySet()
-        } else {
-            current.next(hard).map { it.newState to it.manaCost }.toSet()
+private fun playGame(input: List<String>, hard: Boolean): Int {
+    val (hp, dmg) = input.map { it.split(": ") }.map { it[1].toInt() }
+    return searchGraph(
+        start = GameState(bossHp = hp, bossDamage = dmg),
+        isDone = { it.isWin() },
+        nextSteps = { current ->
+            if (current.isLoss()) {
+                emptySet()
+            } else {
+                current.next(hard).map { it.newState to it.manaCost }.toSet()
+            }
         }
-    }
-)
+    )
+}
 
 private data class GameState(
     val playerHp: Int = 50,
     val playerArmor: Int = 0,
     val playerMana: Int = 500,
     val playerTurn: Boolean = true,
-    val bossHp: Int = 58,
-    val bossDamage: Int = 9,
+    val bossHp: Int,
+    val bossDamage: Int,
     val shieldTimer: Int = 0,
     val poisonTimer: Int = 0,
     val rechargeTimer: Int = 0
