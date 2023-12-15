@@ -2,6 +2,7 @@ package com.github.ferinagy.adventOfCode.aoc2021
 
 import com.github.ferinagy.adventOfCode.println
 import com.github.ferinagy.adventOfCode.readInputLines
+import com.github.ferinagy.adventOfCode.searchGraph
 
 fun main() {
     val input = readInputLines(2021, "23-input")
@@ -33,34 +34,11 @@ private fun part2(input: List<String>): Int {
     return sort(new)
 }
 
-private fun sort(initial: Burrow): Int {
-    val energyMap = mutableMapOf(initial to 0)
-    val set = mutableSetOf(initial)
-    val visited = mutableSetOf<Burrow>()
-
-    while (set.isNotEmpty()) {
-        val burrow = set.minByOrNull { energyMap[it]!! }!!
-        visited += burrow
-        set -= burrow
-
-        val subEnergy = energyMap[burrow]!!
-
-        if (burrow.isOrganized()) return subEnergy
-
-        burrow.possibleMoves().forEach { (next, energy) ->
-            val newEnergy = energy + subEnergy
-            val previous = energyMap[next]
-            if (previous == null || newEnergy < previous) {
-                energyMap[next] = newEnergy
-            }
-            if (next !in visited) {
-                set += next
-            }
-        }
-    }
-
-    return -1
-}
+private fun sort(initial: Burrow): Int = searchGraph(
+    start = initial,
+    isDone = { it.isOrganized() },
+    nextSteps = { it.possibleMoves().toSet() }
+)
 
 private data class Burrow(val hallway: String, val rooms: List<String>) {
     companion object {
