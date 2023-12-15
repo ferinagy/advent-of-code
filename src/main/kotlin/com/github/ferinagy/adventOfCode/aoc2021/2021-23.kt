@@ -1,23 +1,29 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
+
 fun main() {
+    val input = readInputLines(2021, "23-input")
+    val test1 = readInputLines(2021, "23-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
-private fun part1(input: String): Int {
+private fun part1(input: List<String>): Int {
     val initial = Burrow.parse(input)
 
     return sort(initial)
 }
 
-private fun part2(input: String): Int {
+private fun part2(input: List<String>): Int {
     val initial = Burrow.parse(input)
     val toAdd = listOf("DD", "CB", "BA", "AC")
     val newRooms = initial.rooms.mapIndexed { i, room ->
@@ -58,8 +64,8 @@ private fun sort(initial: Burrow): Int {
 
 private data class Burrow(val hallway: String, val rooms: List<String>) {
     companion object {
-        fun parse(input: String): Burrow {
-            return input.lines().let { lines ->
+        fun parse(input: List<String>): Burrow {
+            return input.let { lines ->
                 val rooms = roomPositions.map { "${lines[2][it+1]}${lines[3][it+1]}" }
                 Burrow(hallway = lines[1].substring(1..11), rooms = rooms)
             }
@@ -145,19 +151,3 @@ private fun String.replaceAt(type: Char, index: Int): String {
 }
 
 private fun range(a: Int, b: Int): IntRange = if (a <= b) a .. b else b .. a
-
-private val testInput1 = """
-    |#############
-    |#...........#
-    |###B#C#B#D###
-    |  #A#D#C#A#
-    |  #########
-""".trimMargin()
-
-private val input = """
-    |#############
-    |#...........#
-    |###C#A#B#D###
-    |  #C#A#D#B#
-    |  #########
-""".trimMargin()

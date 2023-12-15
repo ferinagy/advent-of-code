@@ -1,20 +1,25 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
 import kotlin.math.max
 
 fun main() {
+    val input = readInputLines(2021, "21-input")
+    val test1 = readInputLines(2021, "21-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
-private fun part1(input: String): Int {
-    val players = input.lines().map { Player(regex.matchEntire(it)!!.groupValues[1].toInt()) }.toMutableList()
+private fun part1(input: List<String>): Int {
+    val players = input.map { Player(regex.matchEntire(it)!!.groupValues[1].toInt()) }.toMutableList()
     val die = DeterministicDie(100)
 
     var game = Game(players)
@@ -25,8 +30,8 @@ private fun part1(input: String): Int {
     }
 }
 
-private fun part2(input: String): Long {
-    val players = input.lines().map { Player(regex.matchEntire(it)!!.groupValues[1].toInt()) }
+private fun part2(input: List<String>): Long {
+    val players = input.map { Player(regex.matchEntire(it)!!.groupValues[1].toInt()) }
     val initialGame = Game(players)
 
     cache.clear()
@@ -118,9 +123,3 @@ private class DeterministicDie(val max: Int) {
 }
 
 private val regex = """Player \d starting position: (\d+)""".toRegex()
-
-private const val testInput1 = """Player 1 starting position: 4
-Player 2 starting position: 8"""
-
-private const val input = """Player 1 starting position: 3
-Player 2 starting position: 10"""

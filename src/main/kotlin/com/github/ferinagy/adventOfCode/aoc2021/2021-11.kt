@@ -2,19 +2,25 @@ package com.github.ferinagy.adventOfCode.aoc2021
 
 import com.github.ferinagy.adventOfCode.Coord2D
 import com.github.ferinagy.adventOfCode.filterIn
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputLines
 
 fun main() {
+    val input = readInputLines(2021, "11-input")
+    val test1 = readInputLines(2021, "11-test1")
+
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
-private fun part1(input: String): Int {
+private fun part1(input: List<String>): Int {
     val cave = OctopusCave(input)
 
     var flashes = 0
@@ -25,7 +31,7 @@ private fun part1(input: String): Int {
     return flashes
 }
 
-private fun part2(input: String): Int {
+private fun part2(input: List<String>): Int {
     val cave = OctopusCave(input)
 
     var step = 1
@@ -37,15 +43,11 @@ private fun part2(input: String): Int {
     }
 }
 
-private class OctopusCave(input: String) {
+private class OctopusCave(input: List<String>) {
 
-    private val area: List<List<Octopus>>
-
-    init {
-        area = input.lines().mapIndexed { row, line ->
-            line.mapIndexed { col, c ->
-                Octopus(Coord2D(col, row), c.digitToInt())
-            }
+    private val area = input.mapIndexed { row, line ->
+        line.mapIndexed { col, c ->
+            Octopus(Coord2D(col, row), c.digitToInt())
         }
     }
 
@@ -101,25 +103,3 @@ private class OctopusCave(input: String) {
 private class Octopus(val coord: Coord2D, var energy: Int) {
     var didFlash = false
 }
-
-private const val testInput1 = """5483143223
-2745854711
-5264556173
-6141336146
-6357385478
-4167524645
-2176841721
-6882881134
-4846848554
-5283751526"""
-
-private const val input = """6111821767
-1763611615
-3512683131
-8582771473
-8214813874
-2325823217
-2222482823
-5471356782
-3738671287
-8675226574"""

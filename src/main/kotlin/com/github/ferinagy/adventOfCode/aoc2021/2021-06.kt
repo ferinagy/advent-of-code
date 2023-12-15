@@ -1,14 +1,20 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputText
+
 fun main() {
+    val input = readInputText(2021, "06-input")
+    val test1 = readInputText(2021, "06-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
 private fun part1(input: String): Long {
@@ -37,28 +43,3 @@ private fun simulateLanternFish(input: String, generations: Int): Long {
 
     return array.sum()
 }
-
-private fun simulateLanternFish2(input: String, generationd: Int): Int {
-    val list = input.split(",")
-        .map { it.toInt() }
-        .toMutableList()
-    repeat(generationd) {
-        var born = 0
-        list.forEachIndexed { index, i ->
-            if (i == 0) {
-                born++
-                list[index] = 6
-            } else {
-                list[index] = i-1
-            }
-        }
-
-        repeat(born) { list += 8 }
-    }
-
-    return list.size
-}
-
-private const val testInput1 = """3,4,3,1,2"""
-
-private const val input = """3,4,1,1,5,1,3,1,1,3,5,1,1,5,3,2,4,2,2,2,1,1,1,1,5,1,1,1,1,1,3,1,1,5,4,1,1,1,4,1,1,1,1,2,3,2,5,1,5,1,2,1,1,1,4,1,1,1,1,3,1,1,3,1,1,1,1,1,1,2,3,4,2,1,3,1,1,2,1,1,2,1,5,2,1,1,1,1,1,1,4,1,1,1,1,5,1,4,1,1,1,3,3,1,3,1,3,1,4,1,1,1,1,1,4,5,1,1,3,2,2,5,5,4,3,1,2,1,1,1,4,1,3,4,1,1,1,1,2,1,1,3,2,1,1,1,1,1,4,1,1,1,4,4,5,2,1,1,1,1,1,2,4,2,1,1,1,2,1,1,2,1,5,1,5,2,5,5,1,1,3,1,4,1,1,1,1,1,1,1,4,1,1,4,1,1,1,1,1,2,1,2,1,1,1,5,1,1,3,5,1,1,5,5,3,5,3,4,1,1,1,3,1,1,3,1,1,1,1,1,1,5,1,3,1,5,1,1,4,1,3,1,1,1,2,1,1,1,2,1,5,1,1,1,1,4,1,3,2,3,4,1,3,5,3,4,1,4,4,4,1,3,2,4,1,4,1,1,2,1,3,1,5,5,1,5,1,1,1,5,2,1,2,3,1,4,3,3,4,3"""

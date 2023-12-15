@@ -1,16 +1,21 @@
 package com.github.ferinagy.adventOfCode.aoc2021
 
 import com.github.ferinagy.adventOfCode.Coord2D
+import com.github.ferinagy.adventOfCode.println
+import com.github.ferinagy.adventOfCode.readInputText
 
 fun main() {
+    val input = readInputText(2021, "17-input")
+    val test1 = readInputText(2021, "17-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(test1).println()
+    part2(input).println()
 }
 
 private fun part1(input: String): Int {
@@ -58,7 +63,3 @@ private fun parse(input: String): Pair<Coord2D, Coord2D> {
     val (x1, x2, y1, y2) = regex.matchEntire(input)!!.destructured
     return Coord2D(x1.toInt(), y1.toInt()) to Coord2D(x2.toInt(), y2.toInt())
 }
-
-private const val testInput1 = """target area: x=20..30, y=-10..-5"""
-
-private const val input = """target area: x=79..137, y=-176..-117"""
