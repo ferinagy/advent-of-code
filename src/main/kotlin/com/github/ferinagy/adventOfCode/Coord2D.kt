@@ -37,7 +37,9 @@ fun Coord2D.rotateCw() = Coord2D(y, -x)
 
 fun Coord2D.rotateCcw() = Coord2D(-y, x)
 
-fun List<Coord2D>.filterIn(xRange: IntRange, yRange: IntRange) = filter { it.x in xRange && it.y in yRange }
+fun Coord2D.isIn(xRange: IntRange, yRange: IntRange) = x in xRange && y in yRange
+
+fun List<Coord2D>.filterIn(xRange: IntRange, yRange: IntRange) = filter { it.isIn(xRange, yRange) }
 
 data class Coord3D(val x: Int, val y: Int, val z: Int) {
 
