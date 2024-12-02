@@ -1,8 +1,8 @@
 package com.github.ferinagy.adventOfCode
 
 fun main() {
-    val input = readInputLines(2023, "01-input")
-    val test1 = readInputLines(2023, "01-test1")
+    val input = readInputLines(2024, "01-input")
+    val test1 = readInputLines(2024, "01-test1")
 
     println("Part1:")
     part1(test1).println()
