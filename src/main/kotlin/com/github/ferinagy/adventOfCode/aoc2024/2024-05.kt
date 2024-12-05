@@ -33,15 +33,14 @@ private fun isValid(page: List<String>, rules: Map<String, Set<String>>) = page.
     page[index] !in rules || page.subList(0, index).none { it in rules[page[index]]!! }
 }
 
-private fun orderCorrectly(page: List<String>, rules: Map<String, Set<String>>): List<String> {
-    val result = mutableListOf<String>()
-    val remaining = page.toMutableSet()
-    while (remaining.isNotEmpty()) {
-        val next = remaining.find { it !in rules || (rules[it]!!.intersect(remaining) - result).isEmpty() }!!
-        result += next
-        remaining -= next
+private fun orderCorrectly(page: List<String>, rules: Map<String, Set<String>>) = page.sortedWith { o1, o2 ->
+    when {
+        o2 !in rules -> 1
+        o1 !in rules -> -1
+        o1 in rules[o2]!! -> -1
+        o2 in rules[o1]!! -> 1
+        else -> 0
     }
-    return result
 }
 
 private fun parse(input: String): Pair<Map<String, Set<String>>, List<List<String>>> {
