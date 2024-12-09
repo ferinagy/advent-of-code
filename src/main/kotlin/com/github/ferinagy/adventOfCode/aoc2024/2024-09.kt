@@ -13,29 +13,27 @@ fun main() {
 
     println()
     println("Part2:")
+    part2(test1).println()
     part2(input).println()
 }
 
 private fun part1(input: String): Long {
-    val (files, spaces) = parse(input)
+    val (files, _) = parse(input)
 
-    while (spaces.isNotEmpty()) {
-        val space = spaces.removeFirst()
-        var remaining = space.second
-        var dest = space.first
-        while (remaining != 0) {
-            if (files.last().first < dest) break
+    val array = IntArray(input.sumOf { it.digitToInt() }) { -1 }
+    files.forEach { (start, length, id) -> repeat(length) { array[start + it] = id } }
 
-            val file = files.removeLast()
-            val moving = minOf(file.second, remaining)
-            files.add(0, Triple(dest, moving, file.third))
-            dest += moving
-            remaining -= moving
-            val left = file.second - moving
-            if (left != 0) files.add(file.copy(second = left))
-        }
+    var left = 0
+    var right = array.lastIndex
+    while (left <= right) {
+        while (array[left] != -1) left++
+        while (array[right] == -1) right--
+        if (right < left) break
+        array[left] = array[right]
+        array[right] = -1
     }
-    return checkSum(files)
+
+    return array.mapIndexed { i, c -> if (c != -1) c.toLong() * i else 0 }.sum()
 }
 
 private fun part2(input: String): Long {
