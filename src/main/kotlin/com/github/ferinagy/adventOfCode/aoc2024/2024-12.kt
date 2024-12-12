@@ -1,7 +1,6 @@
 package com.github.ferinagy.adventOfCode.aoc2024
 
 import com.github.ferinagy.adventOfCode.*
-import kotlin.time.measureTime
 
 fun main() {
     val input = readInputLines(2024, "12-input")
@@ -82,7 +81,7 @@ private fun edges(area: Set<Coord2D>, dir: Coord2D): Int {
     fun Coord2D.sortingDir() = if (dir.x == 0) x else y
 
     return area.filter { it + dir !in area }
-        .groupBy({ it.groupingDir() })
+        .groupBy { it.groupingDir() }
         .map { g -> g.value.sortedBy { it.sortingDir() } }
         .sumOf { edges ->
             edges.fold(-2 to 0) { (last, acc), next ->
