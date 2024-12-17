@@ -5,78 +5,90 @@ import java.util.*
 import kotlin.time.measureTime
 
 fun main(args: Array<String>) {
-    val lines = File(args[0]).readLines()
-    val start = Step(Position(1, lines.size - 2))
-    val end = Position(lines[0].length - 2, 1)
-    val dists = arrayOfNulls<Pair<Int, Array<Step?>>>(0x40000)
-    dists[start.value] = 0 to arrayOfNulls(4)
+//    printTime {
+        val lines = File(args[0]).readLines()
+        val start = Step(Position(1, lines.size - 2))
+        val end = Position(lines[0].length - 2, 1)
+        val prev = IntArray(0x100000)
+        val dists = IntArray(0x40000)
 
-    val queue = CustomQueue(256, compareBy<Step> { dists[it.value]!!.first })
-    queue += start
+        val queue = CustomQueue(256, compareBy { dists[it] })
+        queue += start
 
-    fun backTrack(step: Step, result: MutableSet<Position>) {
-        result += step.position
-        dists[step.value]!!.second.forEach {
-            if (it != null) backTrack(it, result)
-        }
-    }
-
-    while (queue.isNotEmpty()) {
-        val current = queue.remove()
-        val dist = dists[current.value]!!
-
-        if (current.position == end) {
-            val result = mutableSetOf<Position>()
-            backTrack(current, result)
-            println(result.size)
-            break
+        fun backTrack(step: Step, result: MutableSet<Position>) {
+            result += step.position
+            repeat(4) {
+                val x = prev[step.value * 4 + it]
+                if (x != 0) backTrack(Step(x), result)
+            }
         }
 
-        if (lines[current.position.y + current.direction.y][current.position.x + current.direction.x] != '#') {
-            addToQueue(
-                Step(position = current.position + current.direction, direction = current.direction),
-                dist.first + 1,
-                current,
-                dists,
-                queue
-            )
+        while (queue.isNotEmpty()) {
+            val current = queue.remove()
+            val dist = dists[current.value]
+
+            if (current.position == end) {
+                val result = mutableSetOf<Position>()
+                backTrack(current, result)
+                println(result.size)
+                break
+            }
+
+            val straight = current.position + current.direction
+            if (lines[straight.y][straight.x] != '#') {
+                addToQueue(
+                    Step(position = straight, direction = current.direction),
+                    dist + 1,
+                    current,
+                    prev,
+                    dists,
+                    queue
+                )
+            }
+            val cw = current.direction.rotateCw()
+            val right = current.position + cw
+            if (lines[right.y][right.x] != '#') {
+                addToQueue(
+                    Step(position = right, direction = cw),
+                    dist + 1001,
+                    current,
+                    prev,
+                    dists,
+                    queue
+                )
+            }
+            val ccw = current.direction.rotateCcw()
+            val left = current.position + ccw
+            if (lines[left.y][left.x] != '#') {
+                addToQueue(
+                    Step(position = left, direction = ccw),
+                    dist + 1001,
+                    current,
+                    prev,
+                    dists,
+                    queue
+                )
+            }
         }
-        val cw = current.direction.rotateCw()
-        if (lines[current.position.y + cw.y][current.position.x + cw.x] != '#') {
-            addToQueue(
-                Step(position = current.position + cw, direction = cw),
-                dist.first + 1001,
-                current,
-                dists,
-                queue
-            )
-        }
-        val ccw = current.direction.rotateCcw()
-        if (lines[current.position.y + ccw.y][current.position.x + ccw.x] != '#') {
-            addToQueue(
-                Step(position = current.position + ccw, direction = ccw),
-                dist.first + 1001,
-                current,
-                dists,
-                queue
-            )
-        }
-    }
+//    }
 }
 
 private inline fun addToQueue(
     next: Step,
     newDist: Int,
     current: Step,
-    dists: Array<Pair<Int, Array<Step?>>?>,
-    queue: CustomQueue<Step>
+    prev: IntArray,
+    dist: IntArray,
+    queue: CustomQueue
 ) {
-    if (dists[next.value] == null || newDist < dists[next.value]!!.first) {
-        val newSet = arrayOfNulls<Step?>(4).also { it[current.direction.value] = current }
-        dists[next.value] = newDist to newSet
+    if (dist[next.value] == 0 || newDist < dist[next.value]) {
+        repeat(4) { prev[next.value * 4 + it] = 0 }
+        prev[next.value * 4 + current.direction.value] = current.value
+        dist[next.value] = newDist
+
         queue += next
-    } else if (newDist == dists[next.value]?.first) {
-        dists[next.value]!!.second[current.direction.value] = current
+    } else if (newDist == dist[next.value]) {
+        prev[next.value * 4 + current.direction.value] = current.value
     }
 }
 
@@ -120,41 +132,40 @@ private value class Step(val value: Int) {
         get() = Direction((value and 0b11))
 }
 
-private class CustomQueue<T>(initialSize: Int, private val comparator: Comparator<T>) {
+private class CustomQueue(initialSize: Int, private val comparator: Comparator<Int>) {
 
-    private val queue = arrayOfNulls<Any>(initialSize)
+    private val queue = IntArray(initialSize)
     var size = 0
 
-    operator fun plusAssign(item: T) {
-        siftUp(size, item)
+    operator fun plusAssign(item: Step) {
+        siftUp(size, item.value)
         size += 1
     }
 
     inline fun isNotEmpty() = size != 0
 
-    fun remove(): T {
-        val result = queue[0] as T?
+    fun remove(): Step {
+        val result = Step(queue[0])
 
         size--
         siftDownUsingComparator()
-        queue[size] = null
 
-        return result!!
+        return result
     }
 
     private fun siftDownUsingComparator() {
-        val x: T = queue[size] as T
+        val x = queue[size]
         val half = size ushr 1
         var k = 0
         while (k < half) {
             var child = (k shl 1) + 1
             var c = queue[child]
             val right = child + 1
-            if (right < size && comparator.compare(c as T, queue[right] as T) > 0) {
+            if (right < size && comparator.compare(c, queue[right]) > 0) {
                 c = queue[right]
                 child = right
             }
-            if (comparator.compare(x, c as T) <= 0) break
+            if (comparator.compare(x, c) <= 0) break
 
             queue[k] = c
             k = child
@@ -162,12 +173,12 @@ private class CustomQueue<T>(initialSize: Int, private val comparator: Comparato
         queue[k] = x
     }
 
-    private fun siftUp(k: Int, x: T) {
+    private fun siftUp(k: Int, x: Int) {
         var k = k
         while (k > 0) {
             val parent = (k - 1) ushr 1
             val e = queue[parent]
-            if (comparator.compare(x, e as T) >= 0) break
+            if (comparator.compare(x, e) >= 0) break
             queue[k] = e
             k = parent
         }
