@@ -39,14 +39,14 @@ private fun part1(input: List<String>): Int {
 private fun part2(input: List<String>): Int {
     val (grid, start, end) = parse(input)
 
-    val dists = mutableMapOf<Step, Pair<Int, Set<Coord2D>>>()
+    val dists = mutableMapOf<InlineStep, Pair<Int, Set<Coord2D>>>()
     dists[start] = 0 to setOf(start.position)
 
-    val queue = PriorityQueue(compareBy<Step> { dists[it]!!.first })
+    val queue = PriorityQueue(compareBy<InlineStep> { dists[it]!!.first })
     queue += start
 
     while (queue.isNotEmpty()) {
-        val current: Step = queue.remove()
+        val current: InlineStep = queue.remove()
         val dist = dists[current]!!
 
         if (current.position == end) {
@@ -76,11 +76,11 @@ private fun part2(input: List<String>): Int {
     return -1
 }
 
-private fun parse(input: List<String>): Triple<CharGrid, Step, Coord2D> {
+private fun parse(input: List<String>): Triple<CharGrid, InlineStep, Coord2D> {
     val grid = input.toCharGrid()
-    val start = Step(grid.positionOfFirst { it == 'S' })
+    val start = InlineStep(grid.positionOfFirst { it == 'S' })
     val end = grid.positionOfFirst { it == 'E' }
     return Triple(grid, start, end)
 }
 
-private data class Step(val position: Coord2D, val direction: Coord2D = Coord2D(1, 0))
+private data class InlineStep(val position: Coord2D, val direction: Coord2D = Coord2D(1, 0))
