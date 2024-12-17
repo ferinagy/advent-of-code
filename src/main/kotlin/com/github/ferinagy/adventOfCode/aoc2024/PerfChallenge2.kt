@@ -11,7 +11,7 @@ fun main(args: Array<String>) {
     val dists = arrayOfNulls<Pair<Int, Array<Step?>>>(0x40000)
     dists[start.value] = 0 to arrayOfNulls(4)
 
-    val queue = CustomQueue(100, compareBy<Step> { dists[it.value]!!.first })
+    val queue = CustomQueue(256, compareBy<Step> { dists[it.value]!!.first })
     queue += start
 
     fun backTrack(step: Step, result: MutableSet<Position>) {
@@ -123,7 +123,7 @@ private value class Step(val value: Int) {
 private class CustomQueue<T>(initialSize: Int, private val comparator: Comparator<T>) {
 
     private val queue = arrayOfNulls<Any>(initialSize)
-    private var size = 0
+    var size = 0
 
     operator fun plusAssign(item: T) {
         siftUp(size, item)
