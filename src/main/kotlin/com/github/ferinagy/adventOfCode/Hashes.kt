@@ -3,27 +3,22 @@ package com.github.ferinagy.adventOfCode
 import java.security.MessageDigest
 import kotlin.experimental.and
 
+private val MD5 = MessageDigest.getInstance("MD5")
+
 fun String.md5toBytes() = toByteArray().md5()
 
-fun ByteArray.md5(): ByteArray {
-    val md = MessageDigest.getInstance("MD5")
-
-    return md.digest(this)
-}
-
-private val ZERO_BYTE: Byte = 0
-private val byteWithFirstZeroRange = 0..15
+fun ByteArray.md5(): ByteArray = MD5.digest(this)
 
 fun ByteArray.startsWithZeros(count: Int): Boolean {
     val zeroBytes = count / 2
 
     var index = 0
     repeat(zeroBytes) {
-        if (get(it) != ZERO_BYTE) return false
+        if (get(it) != 0.toByte()) return false
         index++
     }
 
-    if (count % 2 == 1) return get(index) in byteWithFirstZeroRange
+    if (count % 2 == 1) return 0 <= get(index) && get(index) <= 15
 
     return true
 }

@@ -1,18 +1,18 @@
 package com.github.ferinagy.adventOfCode.aoc2016
 
-import com.github.ferinagy.adventOfCode.md5toBytes
-import com.github.ferinagy.adventOfCode.startsWithZeros
-import com.github.ferinagy.adventOfCode.toHexString
+import com.github.ferinagy.adventOfCode.*
 
 fun main() {
+    val input = readInputText(2016, "05-input")
+    val test1 = readInputText(2016, "05-test1")
+
     println("Part1:")
-    println(part1(testInput1))
-    println(part1(input))
+    part1(test1).println()
+    part1(input).println()
 
     println()
     println("Part2:")
-    println(part2(testInput1))
-    println(part2(input))
+    part2(input).println()
 }
 
 private fun part1(input: String): String {
@@ -46,7 +46,3 @@ private fun part2(input: String): String {
         }
     }
 }
-
-private const val testInput1 = """abc"""
-
-private const val input = """reyedfim"""
