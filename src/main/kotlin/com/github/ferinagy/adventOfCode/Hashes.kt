@@ -23,8 +23,6 @@ fun ByteArray.startsWithZeros(count: Int): Boolean {
     return true
 }
 
-fun ByteArray.toHexString() = joinToString(separator = "") { "%02x".format(it) }
-
 operator fun Byte.component1(): Byte = (toUByte() / 16u).toByte()
 
 operator fun Byte.component2(): Byte = this and 0xf
