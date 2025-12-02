@@ -1,8 +1,8 @@
 package com.github.ferinagy.adventOfCode
 
 fun main() {
-    val input = readInputLines(2024, "01-input")
-    val test1 = readInputLines(2024, "01-test1")
+    val input = readInputLines(2025, "01-input")
+    val test1 = readInputLines(2025, "01-test1")
 
     println("Part1:")
     part1(test1).println()
@@ -14,10 +14,10 @@ fun main() {
     part2(input).println()
 }
 
-private fun part1(input: List<String>): Int {
+private fun part1(input: List<String>): Long {
     return 0
 }
 
-private fun part2(input: List<String>): Int {
+private fun part2(input: List<String>): Long {
     return 0
 }
